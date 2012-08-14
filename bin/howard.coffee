@@ -6,7 +6,6 @@ init_cb = (err, howard) ->
     throw err if err
     howard[command]?.call(howard, args, (err, howard) ->
         throw err if err
-        console.log 'done.'
     )
 
 (require '../lib/howard').init(init_cb)
