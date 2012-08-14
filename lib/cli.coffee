@@ -6,6 +6,11 @@ os = require 'os'
 ds = require 'docstore'
 cliff = require 'cliff'
 
+cadigan = require '../lib/cadigan'
+cadigan_server = require '../lib/server'
+
+# TODO wrap cadigan.* methods with the commands below
+
 cadigan_path = "#{process.env['HOME']}/.cadigan"
 
 settings =
@@ -28,6 +33,9 @@ cadigan =
             this.store = store
             cb(null, this)
         )
+
+    start: (args, cb) ->
+        cadigan_server.start(args, cb)
 
     new: (args, cb) ->
         console.log 'new called'

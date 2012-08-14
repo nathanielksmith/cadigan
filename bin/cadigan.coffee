@@ -8,4 +8,4 @@ init_cb = (err, cadigan) ->
         throw err if err
     )
 
-(require '../lib/cadigan').init(init_cb)
+(require '../lib/cli').init(init_cb)
