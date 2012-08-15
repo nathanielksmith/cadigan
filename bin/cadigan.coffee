@@ -1,11 +1,11 @@
 #!/usr/local/bin/coffee
+cli = (require '../lib/cli').cli
 
 [command, args] = [process.argv[2], process.argv[3..]]
 
-init_cb = (err, cadigan) ->
+cli.init((err) ->
     throw err if err
-    cadigan[command]?.call(cadigan, args, (err, cadigan) ->
+    cli[command]?.call(cli, args, (err) ->
         throw err if err
     )
-
-(require '../lib/cli').init(init_cb)
+)

@@ -6,12 +6,13 @@ os = require 'os'
 ds = require 'docstore'
 cliff = require 'cliff'
 
-cadigan = require '../lib/cadigan'
+cadigan = (require '../lib/cadigan').cadigan
 cadigan_server = require '../lib/server'
 
 # TODO wrap cadigan.* methods with the commands below
 
-cadigan =
+cli =
+    init: (cb) -> cadigan.init(cb)
     editor: (filename, cb) ->
         command = process.env['EDITOR'] or 'vim'
         child_process.spawn(command,[filename],{customFds:[0,1,2]}).on('exit',cb)
@@ -68,7 +69,7 @@ cadigan =
         if args.length < 1
             throw 'need post id'
         id = args[0]
-        this.store.get(id, (err, doc) =>
+        cadigan.store.get(id, (err, doc) =>
             filename = this.temp_filename()
             fs.writeFileSync(filename, doc.content)
             this.editor(filename, (code) =>
@@ -119,4 +120,4 @@ cadigan =
         )
     usage: -> 'usage'
 
-exports.init = (cb) -> cadigan.init(cb)
+exports.cli = cli
