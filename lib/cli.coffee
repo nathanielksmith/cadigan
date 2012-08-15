@@ -11,38 +11,23 @@ cadigan_server = require '../lib/server'
 
 # TODO wrap cadigan.* methods with the commands below
 
-cadigan_path = "#{process.env['HOME']}/.cadigan"
-
-settings =
-    docstore_path:  "#{cadigan_path}/docstore"
-
 cadigan =
     editor: (filename, cb) ->
         command = process.env['EDITOR'] or 'vim'
         child_process.spawn(command,[filename],{customFds:[0,1,2]}).on('exit',cb)
 
-    init: (cb) ->
-        console.log 'init called'
-        unless fs.existsSync(cadigan_path)
-            fs.mkdirSync(cadigan_path)
-        unless fs.existsSync(settings.docstore_path)
-            fs.mkdirSync(settings.docstore_path)
-
-        ds.open(settings.docstore_path, (err, store) =>
-            throw err if err
-            this.store = store
-            cb(null, this)
-        )
-
     start: (args, cb) ->
-        cadigan_server.start(args, cb)
+        hostname = args[0] or 'localhost'
+        port = args[1] or '8105'
+        cadigan_server.start(hostname, port, cb)
 
+    temp_filename: -> "#{os.tmpDir()}/cadigan_tmp#{Math.random()}.markdown"
     new: (args, cb) ->
         console.log 'new called'
         if args.length < 1
             cb('no title provided', this)
         title = args[0]
-        filename = "#{os.tmpDir()}/cadigan_tmp#{Math.random()}.markdown"
+        filename = self.temp_filename()
         this.editor(filename, (code) =>
             throw 'editor failed' if code isnt 0
             fs.readFile(filename, (err, data) =>
@@ -63,8 +48,7 @@ cadigan =
                         created:now
                         updated:now
                         published:false
-                    console.log post
-                    this.store.save(post, (err, doc) =>
+                    cadigan.new(post, (err, doc) =>
                         throw err if err
                         console.log doc._id
                         cb(null, this)
@@ -77,23 +61,18 @@ cadigan =
         if args.length < 1
             throw 'need post id'
         id = args[0]
-        this.store.get(id, (err, doc) =>
+        cadigan.publish(id, (err, doc) =>
             throw err if err
-            doc.published = true
-            this.store.save(doc, (err, doc) =>
-                throw err if err
-                console.log doc._id
-                cb(null, this)
-            )
+            console.log doc._id
+            cb(null, this)
         )
-        cb(null, this)
     edit: (args, cb) ->
         console.log 'edit called'
         if args.length < 1
             throw 'need post id'
         id = args[0]
         this.store.get(id, (err, doc) =>
-            filename = "#{os.tmpDir()}/cadigan_tmp#{Math.random()}.markdown"
+            filename = self.temp_filename()
             fs.writeFileSync(filename, doc.content)
             this.editor(filename, (code) =>
                 throw 'editor failed' if code isnt 0
@@ -108,7 +87,7 @@ cadigan =
                         rl.question("title? [#{doc.title}] ", (answer) =>
                             doc.title = answer or doc.title
                             rl.close()
-                            this.store.save(doc, (err, doc) =>
+                            cadigan.update(id, doc, (err, doc) =>
                                 throw err if err
                                 console.log doc._id
                                 cb(null, this)
@@ -119,34 +98,24 @@ cadigan =
             )
         )
     delete: (args, cb) ->
-        console.log 'delete called'
         if args.length < 1
             throw 'need post id'
         id = args[0]
-        this.store.remove(id, (err) =>
+        cadigan.delete(id, (err) =>
+            throw err if err
             console.log "deleted #{id}"
             cb(null, this)
         )
     search: (args, cb) ->
-        console.log 'delete called'
-        if args.length < 1
-            throw 'need keyword'
+        throw 'need keyword' if args.length < 1
         keyword = args[0]
-        filter = (doc) ->
-            # check title, content, tags
-            check = [doc.title, doc.content]
-            check = check.concat(doc.tags) if doc.tags
-            check.reduce((p,c) ->
-                p or c.match(keyword)
-            , false)
-        this.store.scan(filter, (err, docs) =>
+        cadigan.search(keyword, (err, docs) =>
             throw err if err
             cliff.putObjectRows('data', docs, ['_id', 'title'])
             cb(null, this)
         )
     list: (args, cb) ->
-        console.log 'list called'
-        this.store.scan((->true), (err, docs) =>
+        cadigan.list((err, docs) =>
             throw err if err
             cliff.putObjectRows('data', docs, ['_id', 'title'])
             cb(null, this)
