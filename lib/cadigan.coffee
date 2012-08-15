@@ -16,7 +16,11 @@ cadigan =
             cb(null, this)
         )
 
+    now: -> Date.now() / 1000
+
     new: (post, cb) ->
+        post.created = this.now()
+        post.updated = this.now()
         this.store.save(post, (err, doc) =>
             return cb(err) if err
             cb(null, doc)
@@ -33,6 +37,7 @@ cadigan =
         )
 
     update: (post_id, newness, cb) ->
+        doc.updated = this.now()
         this.store.get(post_id, (err, doc) =>
             return cb(err) if err
             _.extend(doc, newness)

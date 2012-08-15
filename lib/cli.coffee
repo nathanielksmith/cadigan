@@ -27,7 +27,7 @@ cadigan =
         if args.length < 1
             cb('no title provided', this)
         title = args[0]
-        filename = self.temp_filename()
+        filename = this.temp_filename()
         this.editor(filename, (code) =>
             throw 'editor failed' if code isnt 0
             fs.readFile(filename, (err, data) =>
@@ -40,13 +40,10 @@ cadigan =
                 rl.question('tags? ', (answer) =>
                     tags = if answer then answer.split(',') else []
                     rl.close()
-                    now = Date.now() / 1000
                     post =
                         title:title
                         content:content
                         tags:tags
-                        created:now
-                        updated:now
                         published:false
                     cadigan.new(post, (err, doc) =>
                         throw err if err
@@ -72,7 +69,7 @@ cadigan =
             throw 'need post id'
         id = args[0]
         this.store.get(id, (err, doc) =>
-            filename = self.temp_filename()
+            filename = this.temp_filename()
             fs.writeFileSync(filename, doc.content)
             this.editor(filename, (code) =>
                 throw 'editor failed' if code isnt 0
