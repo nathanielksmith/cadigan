@@ -29,6 +29,8 @@ cadigan =
             cb(null, doc)
         )
 
+    get: (post_id, cb) -> this.store.get(post_id, cb)
+
     publish: (post_id, cb) ->
         this.store.get(post_id, (err, doc) =>
             return cb(err, this) if err

@@ -69,7 +69,7 @@ cli =
         if args.length < 1
             throw 'need post id'
         id = args[0]
-        cadigan.store.get(id, (err, doc) =>
+        cadigan.get(id, (err, doc) =>
             filename = this.temp_filename()
             fs.writeFileSync(filename, doc.content)
             this.editor(filename, (code) =>
