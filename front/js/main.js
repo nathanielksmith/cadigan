@@ -11,7 +11,24 @@ var app = Sammy('#main', function() {
 
     this.get('#/admin', function() {
         this.rc()
+            .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
             .partial('/templates/admin.mustache')
+    })
+
+    this.get('#/admin/new', function() {
+        this.rc()
+            .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
+            .partial('/templates/admin.new.mustache')
+    })
+    this.get('#/admin/posts', function() {
+        this.rc()
+            .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
+            .partial('/templates/admin.posts.mustache')
+    })
+    this.get('#/admin/search', function() {
+        this.rc()
+            .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
+            .partial('/templates/admin.search.mustache')
     })
 });
 
