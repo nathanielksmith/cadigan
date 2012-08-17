@@ -52,7 +52,7 @@
             cb(null)
         }),
         search: mkjson('/search'),
-        'new': mkpost('/posts'),
+        'new': mkpost('/post'),
         publish: mkpost('/publish'),
         update: mkpost('/update')
     }

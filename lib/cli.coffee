@@ -7,7 +7,7 @@ ds = require 'docstore'
 cliff = require 'cliff'
 
 cadigan = (require '../lib/cadigan').cadigan
-cadigan_server = require '../lib/server'
+start_cadigan_server = (require '../lib/server').start
 
 # TODO wrap cadigan.* methods with the commands below
 
@@ -19,8 +19,9 @@ cli =
 
     start: (args, cb) ->
         hostname = args[0] or 'localhost'
-        port = args[1] or '8105'
-        cadigan_server.start(hostname, port, cb)
+        port = args[1] or 3000
+        start_cadigan_server(hostname, port)
+        cb()
 
     temp_filename: -> "#{os.tmpDir()}/cadigan_tmp#{Math.random()}.markdown"
     new: (args, cb) ->
