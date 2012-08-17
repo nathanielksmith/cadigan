@@ -50,7 +50,7 @@
             this._posts = data
             cb(null)
         }),
-        search:mkjson('/search'),
+        search: mkjson('/search'),
         'new': mkpost('/posts'),
         publish: mkpost('/publish'),
         update: mkpost('/update')
