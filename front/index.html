@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/main.css" />
 
     <script src="js/jquery.js"></script>
+    <script src="js/mustache.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/config.js"></script>
     <script src="js/fun.js"></script>
@@ -36,9 +37,17 @@
         </div> <!-- /.navbar-inner -->
     </div> <!-- /.navbar -->
     <div id="content" class="container-fluid">
-        <p>totally boss</p>
+        <div id="posts" class="row-fluid"> </div>
     </div> <!-- /.container-fluid -->
     <hr>
     <footer>todo</footer>
+
+    <!-- templates -->
+    <div class="template" id="post">
+        <h2>{{ title }}</h2>
+        <p>{{content}}</h2>
+        <p>tags: {{#tags}}{{.}}, {{/tags}}</p>
+        <sub>published at {{created}}</sub>
+    </div>
 </body>
 </html>

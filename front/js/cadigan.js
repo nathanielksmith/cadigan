@@ -43,6 +43,7 @@
     cadigan = {
         init: function(cb) {
             this._posts = []
+            cb(null)
         },
         list: function(cb) { cb(null, this._posts) },
         'delete': mkdel('/post'),
