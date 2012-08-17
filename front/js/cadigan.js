@@ -5,6 +5,7 @@
     var cadigan,mkcall,mkpost,mkjson,mkdel;
 
     mkcall = function(jqfun, path, success) {
+        path = '/api' + path
         return function() {
             var args = toa(arguments)
             var data = {}
@@ -43,7 +44,7 @@
         init: function(cb) {
             this._posts = []
         },
-        list: function(cb) { cb(null, this._posts) }
+        list: function(cb) { cb(null, this._posts) },
         'delete': mkdel('/post'),
         get: mkjson('/post'),
         fetch: mkjson('/posts', function(data, cb) {

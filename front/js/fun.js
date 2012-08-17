@@ -1,4 +1,4 @@
-var toa = function(a) { Array.prototype.slice.call(a); return a }
+var toa = function(a) { return Array.prototype.slice.call(a) }
 Function.prototype.p = function() {
     var args = toa(arguments);
     var f = this;
