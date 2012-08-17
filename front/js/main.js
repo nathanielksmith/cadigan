@@ -1,24 +1,22 @@
-(function() {
-    var render = function() {
-        cadigan._posts.forEach(function(p) {
-            var tmpl = $('#post.template').html()
-            $('#posts').append(Mustache.render(tmpl, p));
-        })
-    }
+var app = Sammy('#main', function() {
+    $.ajaxSetup({xhrFields: {withCredentials:true}})
+    this.use('Mustache')
+    this.helper('rc', function(){ return new Sammy.RenderContext(this) })
 
-    cadigan.init(function(err) {
-        if (err) throw err
-        cadigan.fetch(render)
+    this.get('#/', function() {
+        this.rc()
+            .loadPartials({post:'/templates/post.mustache'})
+            .partial('/templates/index.mustache', {posts:cadigan._posts})
     })
 
-    $('.navbar .nav > li > a.admin').click(function(e) {
-        $('.page').hide()
-        $('div#admin').show()
-        $('#workspace').html(
+    this.get('#/admin', function() {
+        this.rc()
+            .partial('/templates/admin.mustache')
     })
+});
 
-    $('#controls a').click(function(e) {
-        var target = $(e.target).attr('data-target')
-        $('#'+target).show()
+cadigan.init(function(err) {
+    cadigan.fetch(function(err) {
+        app.run('#/')
     })
-})()
+})
