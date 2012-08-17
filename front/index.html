@@ -13,7 +13,6 @@
     <script src="js/config.js"></script>
     <script src="js/fun.js"></script>
     <script src="js/cadigan.js"></script>
-    <script src="js/main.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -27,20 +26,51 @@
                 <a id="title" class="brand" href="#">totally rad</a>
                 <div class="nav-collapse">
                     <ul class="nav">
-                        <li><a href="#">todo</a></li>
-                        <li><a href="#">todo</a></li>
-                        <li><a href="#">todo</a></li>
-                        <li><a href="#">todo</a></li>
+                        <li><a href="#">search</a></li>
+                        <li><a class="admin" href="#">admin</a></li>
                     </ul> <!-- /.nav -->
                 </div> <!-- /.nav-collapse -->
             </div> <!-- /.container -->
         </div> <!-- /.navbar-inner -->
     </div> <!-- /.navbar -->
-    <div id="content" class="container-fluid">
+    <div id="content" class="page container-fluid">
         <div id="posts" class="row-fluid"> </div>
     </div> <!-- /.container-fluid -->
+    <div style="display:none" id="admin" class="page container-fluid">
+        <div class="row-fluid">
+            <div class="span3" id="controls">
+                <ul class="nav nav-list">
+                  <li class="nav-header">
+                    write words
+                  </li>
+                  <li class="active">
+                    <a href="#" data-target="dashboard">Dashboard</a>
+                  </li>
+                  <li>
+                    <a href="#" data-target="new">New</a>
+                  </li>
+                  <li>
+                    <a href="#" data-target="posts">Posts</a>
+                  </li>
+                  <li>
+                    <a href="#" data-target="drafts">Drafts</a>
+                  </li>
+                  <li>
+                    <a href="#" data-target="search">Search</a>
+                  </li>
+                </ul>
+            </div> <!-- /.span3 -->
+            <div id="workspace" class="span9">
+                workspace
+            </div> <!-- /.span9 -->
+        </div> <!-- /.row-fluid -->
+    </div> <!-- /.page.container-fluid -->
     <hr>
     <footer>todo</footer>
+
+    <!-- cards -->
+    <div class="card" id="dashboard">
+    </div>
 
     <!-- templates -->
     <div class="template" id="post">
@@ -49,5 +79,7 @@
         <p>tags: {{#tags}}{{.}}, {{/tags}}</p>
         <sub>published at {{created}}</sub>
     </div>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
