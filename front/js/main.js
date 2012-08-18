@@ -32,8 +32,13 @@ var app = Sammy('#main', function() {
     })
 });
 
-cadigan.init(function(err) {
-    cadigan.fetch(function(err) {
-        app.run('#/')
+var converter = new Showdown.converter();
+app.md = function(text) { return converter.makeHtml(text) }
+
+$(function() {
+    cadigan.init(function(err) {
+        cadigan.fetch(function(err) {
+            app.run('#/')
+        })
     })
 })

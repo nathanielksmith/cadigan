@@ -1,6 +1,24 @@
 <div class="row-fluid">
     {{> sidebar }}
     <div id="workspace" class="span9">
-        <h2>new post</h2>
+        <div class="row-fluid">
+            <div class="span6">
+                <h2>new post</h2>
+                <textarea id="posteditor" class="span12" style="height:250px;width:100%"></textarea>
+            </div> <!-- /.row-fluid -->
+            <div class="span6">
+                <h2>preview</h2>
+                <div id="postpreview">
+                </div>
+            </div> <!-- /.row-fluid -->
+        </div> <!-- /.row-fluid -->
     </div> <!-- /.span9 -->
 </div> <!-- /.row-fluid -->
+
+<script>
+    var update_preview = function() {
+        $('#postpreview').html(app.md($('#posteditor').val()))
+    }
+    $('#posteditor').keydown(update_preview)
+    $('#posteditor').keyup(update_preview)
+</script>
