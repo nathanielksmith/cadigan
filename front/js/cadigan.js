@@ -4,7 +4,7 @@
 
     var cadigan,mkcall,mkpost,mkjson,mkdel;
 
-    mkcall = function(jqfun, path, success) {
+    mkcall = function(jqfun, path, success, error) {
         path = '/api' + path
         return function() {
             var args = toa(arguments)
@@ -14,19 +14,22 @@
             else if (args.length === 2) {
                 data = args[0]
                 cb = args[1]
-            }
+            } else
             var successwrap
             if (!success) {
-                successwrap = function(data, cb) { cb(null, data) }
+                successwrap = function(data) { cb(null, data) }
             }
             else {
                 successwrap = function(data) {
                     success.call(cadigan, data, cb);
                 }
             }
-            jqfun(path, data).success(successwrap).error(function() {
-                cb('unable to call ' + jqfun.name + ' path ' + data);
-            })
+            if (!error) {
+                error = function() {
+                    cb('unable to call ' + jqfun.name + ' path ' + data);
+                }
+            }
+            jqfun(path, data).success(successwrap).error(error)
         }
     }
 

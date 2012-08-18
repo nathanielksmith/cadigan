@@ -29,6 +29,8 @@ app.delete('/api/post', (req, res) ->
 
 # new
 app.post('/api/post', (req, res) ->
+    console.log(req.body)
+    res.send 200
 )
 
 # publish

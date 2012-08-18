@@ -3,8 +3,13 @@
     <div id="workspace" class="span9">
         <div class="row-fluid">
             <div class="span6">
-                <h2>new post</h2>
-                <textarea id="posteditor" class="span12" style="height:250px;width:100%"></textarea>
+                <h2>write a post</h2>
+                <input type="text" name="title" placeholder="title"/>
+                <textarea data-post_id="" name="posttext" id="posteditor" class="span12" style="height:250px;width:100%"></textarea>
+                <input type="text" name="tags" placeholder="how about, some, tags" />
+                <div class="row-fluid">
+                    <div id="poststatus" class="well span12"></div>
+                </div> <!-- /.row-fluid -->
             </div> <!-- /.row-fluid -->
             <div class="span6">
                 <h2>preview</h2>
@@ -16,9 +21,34 @@
 </div> <!-- /.row-fluid -->
 
 <script>
-    var update_preview = function() {
-        $('#postpreview').html(app.md($('#posteditor').val()))
+    var save_timeout = null;
+    var on_post_update = function() {
+        var $editor = $('#posteditor')
+        var text = $editor.val()
+        var post_id = $editor.attr('data-post_id')
+        $('#postpreview').html(app.md(text))
+
+       if (save_timeout) { console.log('no'); return }
+
+        save_timeout = setTimeout(function() {
+            console.log('trying to update: ')
+            var cb = function(err) {
+                if (err) throw err
+                save_timeout = null
+            }
+            var post = {
+                title: $('input[name=title]').val(),
+                content: text,
+                tags: $('input[name=tags]').val().split(',')
+            }
+            console.log(post)
+            if (post_id.match(/\d+/)) {
+                post._id = post_id
+                cadigan.update(post_id, post, cb)
+            }
+            else { cadigan.new(post, cb) }
+        }, 500)
     }
-    $('#posteditor').keydown(update_preview)
-    $('#posteditor').keyup(update_preview)
+    $('#posteditor').keydown(on_post_update)
+    $('#posteditor').keyup(on_post_update) 
 </script>
