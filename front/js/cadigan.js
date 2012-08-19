@@ -50,7 +50,13 @@
         },
         list: function(cb) { cb(null, this._posts) },
         'delete': mkdel('/post'),
-        get: mkjson('/post'),
+        //get: mkjson('/post'),
+        get: function(data, cb) {
+            var post = this._posts.filter(function(x) {
+                return x._id == data.post_id
+            })[0]
+            cb(null, post)
+        },
         fetch: mkjson('/posts', function(data, cb) {
             this._posts = data
             cb(null)

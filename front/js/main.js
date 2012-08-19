@@ -26,6 +26,13 @@ var app = Sammy('#main', function() {
             .partial('/templates/admin.posts.mustache', {posts:cadigan._posts})
     })
     this.get('#/admin/edit/:post_id', function() {
+        $('.modal').modal('hide')
+        var rc = this.rc()
+        cadigan.get({post_id:this.params.post_id}, function(err, post) {
+            console.log(post)
+            rc.loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
+                .partial('/templates/admin.new.mustache', post)
+        })
     })
     this.post('#/admin/delete', function() {
         cadigan.delete({post_id:this.params.post_id}, function(err) {
