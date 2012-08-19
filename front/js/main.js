@@ -23,7 +23,7 @@ var app = Sammy('#main', function() {
     this.get('#/admin/posts', function() {
         this.rc()
             .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
-            .partial('/templates/admin.posts.mustache')
+            .partial('/templates/admin.posts.mustache', {posts:cadigan._posts})
     })
     this.get('#/admin/search', function() {
         this.rc()

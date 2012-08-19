@@ -2,5 +2,81 @@
     {{> sidebar }}
     <div id="workspace" class="span9">
         <h2>posts</h2>
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th>id</th>
+                        <th>title</th>
+                        <th>published</th>
+                        <th>updated</th>
+                        <th>tags</th>
+                    </tr>
+                    {{#posts}}
+                    <tr class="post" data-post_id="{{_id}}">
+                        <td>
+                            <form class="action" id="delete" action="#/delete" method="post">
+                                <input type="hidden" name="post_id" value="{{_id}}" />
+                                <button type="submit" class="btn btn-mini"><span class="icon-remove-sign"></span>
+                            </form>
+                        </td>
+                        <td class="id">{{_id}}</td>
+                        <td>{{title}}</td>
+                        <td>{{#published}}<span class="icon-ok"></span>{{/published}}
+                        <td>{{updated}}</td>
+                        <td>{{#tags}}{{.}}, {{/tags}}</td>
+                    </tr>
+                    <!-- action modal -->
+                    <div class="modal {{_id}} hide">
+                        <div class="modal-header">
+                            {{_id}}
+                            <button type="button" class="close" data-dismiss="modal"><span class="icon-remove"></span></button>
+                        </div>
+                        <div class="modal-body" style="text-align:center">
+                            {{#published}}
+                            <form class="action" id="draft" action="#/unpublish" method="post">
+                                <input type="hidden" name="post_id" value="{{_id}}" />
+                                <button class="btn" type="submit">
+                                    <span class="icon-eye-close"></span>
+                                    move to drafts
+                                </button>
+                            </form>
+                            {{/published}}
+                            {{^published}}
+                            <form class="action" id="publish" action="#/publish" method="post">
+                                <input type="hidden" name="post_id" value="{{_id}}" />
+                                <button class="btn" type="submit">
+                                    <span class="icon-eye-open"></span>
+                                    publish
+                                </button>
+                            </form>
+                            {{/published}}
+                            <a href="#/edit/{{_id}}" class="btn"><span class="icon-pencil"></span> edit</a>
+                            <form class="action" id="delete" action="#/delete" method="post">
+                                <input type="hidden" name="post_id" value="{{_id}}" />
+                                <button class="btn" type="submit">
+                                    <span class="icon-remove"></span>
+                                    delete
+                                </button>
+                            </form>
+                        </div> <!-- /.modal-body -->
+                    </div> <!-- /.modal -->
+                    {{/posts}}
+                </table>
+            </div> <!-- /.span12 -->
+        </div> <!-- /.row-fluid -->
     </div> <!-- /.span9 -->
 </div> <!-- /.row-fluid -->
+
+<script>
+    $("tr.post").click(function(e) {
+        var $target = $(e.target)
+        if ($target.hasClass('btn')) return
+
+        var $tr = $target.hasClass('post') ? $target : $target.parents('tr.post')
+        var post_id = $tr.attr('data-post_id')
+
+        $('.modal.'+post_id).modal('show')
+    })
+</script>
