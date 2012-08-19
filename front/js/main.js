@@ -28,14 +28,22 @@ var app = Sammy('#main', function() {
     this.get('#/admin/edit/:post_id', function() {
     })
     this.post('#/admin/delete', function() {
-        cadigan.delete(this.params, function(err) {
+        cadigan.delete({post_id:this.params.post_id}, function(err) {
             if (err) throw err
             $('.alerts').append($('#deletedalert').clone().show())
         })
     })
     this.post('#/admin/publish', function() {
+        cadigan.publish({post_id:this.params.post_id}, function(err) {
+            if (err) throw err
+            $('.alerts').append($('#publishedalert').clone().show())
+        })
     })
     this.post('#/admin/unpublish', function() {
+        cadigan.unpublish({post_id:this.params.post_id}, function(err) {
+            if (err) throw err
+            $('.alerts').append($('#unpublishedalert').clone().show())
+        })
     })
 });
 

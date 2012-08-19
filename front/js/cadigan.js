@@ -58,6 +58,7 @@
         search: mkjson('/search'),
         'new': mkpost('/post'),
         publish: mkpost('/publish'),
+        unpublish: mkpost('/unpublish'),
         update: mkpost('/update')
     }
 

@@ -37,6 +37,14 @@ app.post('/api/post', (req, res) ->
 
 # publish
 app.post('/api/publish', (req, res) ->
+    console.log(req.body)
+    res.send 200
+)
+
+# unpublish
+app.post('/api/unpublish', (req, res) ->
+    console.log(req.body)
+    res.send 200
 )
 
 # update (editing)
