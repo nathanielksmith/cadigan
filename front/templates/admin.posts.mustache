@@ -16,7 +16,7 @@
                     {{#posts}}
                     <tr class="post" data-post_id="{{_id}}">
                         <td>
-                            <form class="action" id="delete" action="#/delete" method="post">
+                            <form class="action" id="delete" action="#/admin/delete" method="post">
                                 <input type="hidden" name="post_id" value="{{_id}}" />
                                 <button type="submit" class="btn btn-mini"><span class="icon-remove-sign"></span>
                             </form>
@@ -35,7 +35,7 @@
                         </div>
                         <div class="modal-body" style="text-align:center">
                             {{#published}}
-                            <form class="action" id="draft" action="#/unpublish" method="post">
+                            <form class="action" id="draft" action="#/admin/unpublish" method="post">
                                 <input type="hidden" name="post_id" value="{{_id}}" />
                                 <button class="btn" type="submit">
                                     <span class="icon-eye-close"></span>
@@ -44,7 +44,7 @@
                             </form>
                             {{/published}}
                             {{^published}}
-                            <form class="action" id="publish" action="#/publish" method="post">
+                            <form class="action" id="publish" action="#/admin/publish" method="post">
                                 <input type="hidden" name="post_id" value="{{_id}}" />
                                 <button class="btn" type="submit">
                                     <span class="icon-eye-open"></span>
@@ -53,7 +53,7 @@
                             </form>
                             {{/published}}
                             <a href="#/edit/{{_id}}" class="btn"><span class="icon-pencil"></span> edit</a>
-                            <form class="action" id="delete" action="#/delete" method="post">
+                            <form class="action" id="delete" action="#/admin/delete" method="post">
                                 <input type="hidden" name="post_id" value="{{_id}}" />
                                 <button class="btn" type="submit">
                                     <span class="icon-remove"></span>
@@ -72,7 +72,7 @@
 <script>
     $("tr.post").click(function(e) {
         var $target = $(e.target)
-        if ($target.hasClass('btn')) return
+        if ($target.hasClass('btn') || $target.hasClass('icon-remove-sign')) return
 
         var $tr = $target.hasClass('post') ? $target : $target.parents('tr.post')
         var post_id = $tr.attr('data-post_id')

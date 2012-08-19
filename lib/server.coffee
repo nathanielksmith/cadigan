@@ -25,6 +25,8 @@ app.get('/api/posts', (req, res) ->
 
 # delete
 app.delete('/api/post', (req, res) ->
+    console.log req.body
+    res.send 200
 )
 
 # new

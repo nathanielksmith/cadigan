@@ -36,7 +36,7 @@
     mkpost = mkcall.p($.post)
     mkjson = mkcall.p($.getJSON)
     mkdel = mkcall.p(function(path, data) {
-        $.ajax({
+        return $.ajax({
             url:path,
             data:data,
             type:'delete'

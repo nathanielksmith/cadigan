@@ -25,10 +25,17 @@ var app = Sammy('#main', function() {
             .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
             .partial('/templates/admin.posts.mustache', {posts:cadigan._posts})
     })
-    this.get('#/admin/search', function() {
-        this.rc()
-            .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
-            .partial('/templates/admin.search.mustache')
+    this.get('#/admin/edit/:post_id', function() {
+    })
+    this.post('#/admin/delete', function() {
+        cadigan.delete(this.params, function(err) {
+            if (err) throw err
+            $('.alerts').append($('#deletedalert').clone().show())
+        })
+    })
+    this.post('#/admin/publish', function() {
+    })
+    this.post('#/admin/unpublish', function() {
     })
 });
 
