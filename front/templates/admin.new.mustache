@@ -4,12 +4,13 @@
         <div class="row-fluid">
             <div class="span6">
                 <h2>write a post</h2>
+                <div class="row-fluid">
+                    <div class="span12 alert" id="poststatus">
+                    </div>
+                </div>
                 <input type="text" name="title" placeholder="title"/>
                 <textarea data-post_id="" name="posttext" id="posteditor" class="span12" style="height:250px;width:100%"></textarea>
                 <input type="text" name="tags" placeholder="how about, some, tags" />
-                <div class="row-fluid">
-                    <div id="poststatus" class="well span12"></div>
-                </div> <!-- /.row-fluid -->
             </div> <!-- /.row-fluid -->
             <div class="span6">
                 <h2>preview</h2>
@@ -28,12 +29,21 @@
         var post_id = $editor.attr('data-post_id')
         $('#postpreview').html(app.md(text))
 
-       if (save_timeout) { console.log('no'); return }
+        if (save_timeout) {
+            $("#poststatus").html('<span class="saving icon-remove"></span> ...saving')
+                    .addClass('alert-error')
+                    .removeClass('alert-success')
+            console.log('no')
+            return
+        }
 
         save_timeout = setTimeout(function() {
-            console.log('trying to update: ')
             var cb = function(err) {
                 if (err) throw err
+                console.log('updating')
+                $("#poststatus").html('<span class="saved icon-ok"></span> saved')
+                    .addClass('alert-success')
+                    .removeClass('alert-error')
                 save_timeout = null
             }
             var post = {
@@ -47,8 +57,11 @@
                 cadigan.update(post_id, post, cb)
             }
             else { cadigan.new(post, cb) }
-        }, 500)
+        }, 1000)
     }
-    $('#posteditor').keydown(on_post_update)
-    $('#posteditor').keyup(on_post_update) 
+    ;['#posteditor','input[name=title]','input[name=tags]'].forEach(function(x) {
+        $(x).keydown(on_post_update)
+        $(x).keyup(on_post_update)
+    })
+
 </script>
