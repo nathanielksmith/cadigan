@@ -49,7 +49,7 @@
             var post = {
                 title: $('input[name=title]').val(),
                 content: text,
-                tags: $('input[name=tags]').val().split(',')
+                tags: $('input[name=tags]').val().split(',').map($.trim)
             }
             console.log(post)
             if (post_id.match(/\d+/)) {
