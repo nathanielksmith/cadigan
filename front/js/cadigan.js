@@ -70,7 +70,12 @@
             cb(null, post)
         },
         fetch: mkjson('/posts', function(data, cb) {
-            this._posts = data.sort(function(a,b) { return -(a.created-b.created) })
+            this._posts = data.sort(function(a,b) { return -(a.created-b.created) }).map(function(x) {
+                var datefmt = function(ts) { return String(new Date(ts*1000)).split(' ').slice(0,5).join(' ') }
+                x.pretty_created = datefmt(x.created)
+                x.pretty_updated = datefmt(x.updated)
+                return x
+            })
             cb(null)
         }),
         search: mkjson('/search'),
