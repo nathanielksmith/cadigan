@@ -2,7 +2,7 @@
   "name": "cadigan",
   "preferGlobal": "true",
   "description": "a blog engine",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "nathanielksmith <nathanielksmith@gmail.com>",
   "maintainers": [
     "nathanielksmith <nathanielksmith@gmail.com>"
