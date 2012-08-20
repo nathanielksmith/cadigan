@@ -74,6 +74,8 @@
                 var datefmt = function(ts) { return String(new Date(ts*1000)).split(' ').slice(0,5).join(' ') }
                 x.pretty_created = datefmt(x.created)
                 x.pretty_updated = datefmt(x.updated)
+                var converter = new Showdown.converter();
+                x.pretty_content = converter.makeHtml(x.content)
                 return x
             })
             cb(null)
