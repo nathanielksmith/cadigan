@@ -67,7 +67,7 @@ cadigan =
     search: (keyword, cb) ->
         filter = (doc) ->
             # check title, content, tags
-            return false if doc._id == 'auth' or doc._id = 'meta'
+            return false if doc._id == 'auth' or doc._id == 'meta'
             check = [doc.title, doc.content]
             check = check.concat(doc.tags) if doc.tags
             reductor = (p,c) -> if c then p or c.match(keyword) else false
