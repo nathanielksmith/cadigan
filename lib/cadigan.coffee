@@ -77,4 +77,12 @@ cadigan =
         doc._id != 'auth'
     , cb)
 
+    published: (cb) -> this.store.scan((doc) ->
+        doc._id != 'auth' and doc.published = true
+    , cb)
+
+    drafts: (cb) -> this.store.scan((doc) ->
+        doc._id != 'auth' and doc.published = false
+    , cb)
+
 exports.cadigan = cadigan

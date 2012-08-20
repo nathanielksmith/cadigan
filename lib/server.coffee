@@ -93,7 +93,7 @@ app.post('/api/post', ensure_auth, (req, res) ->
 app.post('/api/publish', ensure_auth, (req, res) ->
     console.log req.body
     cadigan.init((err) ->
-        cadigan.unpublish(req.body.post_id, (err) ->
+        cadigan.publish(req.body.post_id, (err) ->
             res.send if err then 500 else 200
         )
     )

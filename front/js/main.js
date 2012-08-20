@@ -6,10 +6,16 @@ var app = Sammy('#main', function() {
     this.use('Mustache')
     this.helper('rc', function(){ return new Sammy.RenderContext(this) })
 
+    this.get('/', function() {
+        this.rc()
+            .loadPartials({post:'/templates/post.mustache'})
+            .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
+    })
+
     this.get('#/', function() {
         this.rc()
             .loadPartials({post:'/templates/post.mustache'})
-            .partial('/templates/index.mustache', {posts:cadigan._posts})
+            .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
     })
 
     this.get('#/admin', function() {
