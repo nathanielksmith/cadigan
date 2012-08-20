@@ -25,7 +25,7 @@
   "devDependencies": {
   },
   "bin": {
-    "forever": "./bin/cadigan",
+    "forever": "./bin/cadigan"
   },
   "main": "./lib/cadigan",
   "scripts": { },
