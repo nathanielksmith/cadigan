@@ -1,4 +1,8 @@
-<h2>{{ title }}</h2>
-<p>{{content}}</h2>
-<p>tags: {{#tags}}{{.}}, {{/tags}}</p>
-<sub>published at {{created}}</sub>
+<div class="post row-fluid">
+    <div style="margin-left:10%" class="span9">
+        <h2><a href="#/post/{{_id}}">{{ title }}</a></h2>
+        <p>{{content}}</p>
+        <sub>tags: {{#tags}}<a href="#/tag/{{.}}">{{.}}</a> {{/tags}}</sub><br />
+        <sub>published at {{created}}</sub>
+    </div> <!-- /.span6 -->
+</div> <!-- /.row-fluid.post -->
