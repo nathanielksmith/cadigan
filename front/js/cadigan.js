@@ -14,7 +14,12 @@
             else if (args.length === 2) {
                 data = args[0]
                 cb = args[1]
-            } else
+            }
+            var auth = JSON.parse(window.localStorage.getItem('auth'))
+            if (auth) {
+                data.username = auth.username
+                data.password = auth.password
+            }
             var successwrap
             if (!success) {
                 successwrap = function(data) { cb(null, data) }
@@ -65,7 +70,14 @@
         'new': mkpost('/post'),
         publish: mkpost('/publish'),
         unpublish: mkpost('/unpublish'),
-        update: mkpost('/update')
+        update: mkpost('/update'),
+        auth: mkpost('/check-auth', function(data, cb) {
+            if (data.username && data.password) {
+                window.localStorage.setItem('auth', JSON.stringify(data))
+                return cb(null)
+            }
+            else return cb('something strange')
+        })
     }
 
     window.cadigan = cadigan

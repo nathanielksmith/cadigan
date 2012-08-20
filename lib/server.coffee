@@ -2,7 +2,7 @@ readline = require 'readline'
 
 
 express = require 'express'
-sha1 = require 'sha1'
+hash = require 'node_hash'
 
 cadigan = (require '../lib/cadigan').cadigan
 
@@ -14,13 +14,29 @@ app.use express.bodyParser()
 ensure_auth = (req, res, next) ->
     cadigan.init((err) ->
         cadigan.store.get('auth', (err, doc) ->
-            if doc.username === req.body.username and doc.password === req.body.password:
+            if doc.username == req.body.username and doc.password == req.body.password
                 next()
             else
                 res.send 403
         )
     )
 
+# check-auth
+app.post('/api/check-auth', (req, res) ->
+    username = req.body.username
+    password = req.body.password
+    cadigan.init((err) ->
+        cadigan.store.get('auth', (err, doc) ->
+            if err
+                console.error err
+                return res.send 500
+            if username != doc.username or password != doc.password
+                res.send 400
+            else
+                res.send username:username, password:password
+        )
+    )
+)
 # get
 app.get('/api/post', (req, res) ->
 )
@@ -89,7 +105,7 @@ exports.start = (hostname, port) ->
                         auth =
                             _id: 'auth'
                             username: username
-                            password: sha1(password)
+                            password: hash.sha256(password)
                         cadigan.store.save(auth, (err, doc)->
                             throw err if err
                             rl.write("got you down as #{username}\n")

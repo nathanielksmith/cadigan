@@ -1,5 +1,8 @@
 var app = Sammy('#main', function() {
-    $.ajaxSetup({xhrFields: {withCredentials:true}})
+    // TODO not using cookies so don't need this...
+    $.ajaxSetup({
+        xhrFields: {withCredentials:true}
+    })
     this.use('Mustache')
     this.helper('rc', function(){ return new Sammy.RenderContext(this) })
 
@@ -50,6 +53,16 @@ var app = Sammy('#main', function() {
         cadigan.unpublish({post_id:this.params.post_id}, function(err) {
             if (err) throw err
             $('.alerts').append($('#unpublishedalert').clone().show())
+        })
+    })
+    this.post('#/auth', function() {
+        var username = this.params.username
+        var shaObj = new jsSHA(this.params.password, "ASCII");
+        var password = shaObj.getHash("SHA-256", "HEX");
+        cadigan.auth({username:username, password:password}, function(err) {
+            if (err) throw err
+            $('.alerts').append($('#welcomealert').clone().show())
+            $('.modal').modal('hide')
         })
     })
 });

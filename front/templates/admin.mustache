@@ -1,6 +1,28 @@
+<script src="js/sha256.js"></script>
 <div class="row-fluid">
     {{> sidebar }}
     <div id="workspace" class="span9">
         pretty stats and things!
     </div> <!-- /.span9 -->
 </div> <!-- /.row-fluid -->
+
+<!-- modals -->
+
+<div class="modal hide" id="authmodal">
+    <form id="auth" action="#/auth" method="post">
+        <div class="modal-body">
+                <input type="text" name="username" placeholder="username" /> <br />
+                <input type="password" name="password" placeholder="password" /> <br />
+        </div> <!-- /.modal-body -->
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="let me in" />
+        </div> <!-- /.modal-footer -->
+    </form>
+</div> <!-- /.modal -->
+
+<script>
+    var auth = JSON.parse(window.localStorage.getItem('auth'))
+    if (!auth) {
+        $('#authmodal').modal('show')
+    }
+</script>
