@@ -38,9 +38,11 @@ var app = Sammy('#main', function() {
         })
     })
     this.post('#/admin/delete', function() {
-        cadigan.delete({post_id:this.params.post_id}, function(err) {
+        var post_id = this.params.post_id
+        cadigan.delete({post_id:post_id}, function(err) {
             if (err) throw err
             $('.alerts').append($('#deletedalert').clone().show())
+            $('tr[data-post_id='+post_id+']').fadeOut()
         })
     })
     this.post('#/admin/publish', function() {
