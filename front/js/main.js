@@ -18,7 +18,7 @@ var app = Sammy('#main', function() {
     this.get('#/admin/new', function() {
         this.rc()
             .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
-            .partial('/templates/admin.new.mustache')
+            .partial('/templates/admin.write.mustache')
     })
     this.get('#/admin/posts', function() {
         this.rc()
@@ -31,7 +31,7 @@ var app = Sammy('#main', function() {
         cadigan.get({post_id:this.params.post_id}, function(err, post) {
             console.log(post)
             rc.loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
-                .partial('/templates/admin.new.mustache', post)
+                .partial('/templates/admin.write.mustache', post)
         })
     })
     this.post('#/admin/delete', function() {
