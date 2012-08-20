@@ -49,6 +49,8 @@ app.post('/api/unpublish', (req, res) ->
 
 # update (editing)
 app.post('/api/update', (req, res) ->
+    console.log(req.body)
+    res.send 200
 )
 
 exports.start = (hostname, port) ->

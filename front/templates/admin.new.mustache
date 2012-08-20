@@ -2,15 +2,16 @@
     {{> sidebar }}
     <div id="workspace" class="span9">
         <div class="row-fluid">
-            <div class="span6">
+            <div id="post" class="span6">
                 <h2>write a post</h2>
                 <div class="row-fluid">
                     <div class="span12 alert" id="poststatus">
                     </div>
                 </div>
                 <input type="text" name="title" placeholder="title" value="{{title}}"/>
-                <textarea data-post_id="" name="posttext" id="posteditor" class="span12" style="height:250px;width:100%">{{content}}</textarea>
+                <textarea data-post_id="{{_id}}" name="posttext" id="posteditor" class="span12" style="height:250px;width:100%">{{content}}</textarea>
                 <input type="text" name="tags" placeholder="how about, some, tags" value="{{tags}}"/>
+                <p><strong>id:</strong> <span id="id">{{_id}}{{^_id}}(new){{/_id}}</span></p>
             </div> <!-- /.row-fluid -->
             <div class="span6">
                 <h2>preview</h2>
@@ -38,13 +39,15 @@
         }
 
         save_timeout = setTimeout(function() {
-            var cb = function(err) {
+            var cb = function(err, data) { // TODO this will work when data is actually sent from backend
                 if (err) throw err
                 console.log('updating')
                 $("#poststatus").html('<span class="saved icon-ok"></span> saved')
                     .addClass('alert-success')
                     .removeClass('alert-error')
                 save_timeout = null
+                $("#id").text(data.post_id)
+                $("#posteditor").attr('data-post_id', data.post_id)
             }
             var post = {
                 title: $('input[name=title]').val(),
@@ -54,7 +57,7 @@
             console.log(post)
             if (post_id.match(/\d+/)) {
                 post._id = post_id
-                cadigan.update(post_id, post, cb)
+                cadigan.update({post_id:post_id, newness:post}, cb)
             }
             else { cadigan.new(post, cb) }
         }, 1000)
