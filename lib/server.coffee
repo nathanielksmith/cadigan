@@ -84,7 +84,7 @@ app.post('/api/post', ensure_auth, (req, res) ->
             tags: req.body.tags
             content: req.body.content
         cadigan.new(post, (err, post) ->
-            res.send if err then 500 else doc
+            res.send if err then 500 else post
         )
     )
 )
