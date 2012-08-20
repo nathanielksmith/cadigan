@@ -3,6 +3,9 @@
     <div id="workspace" class="span9">
         <h2>posts</h2>
         <div class="row-fluid">
+            <span class="icon-search"></span><input type="search" name="filter" />
+        </div>
+        <div class="row-fluid">
             <div class="span12">
                 <table class="table table-striped">
                     <tr>
@@ -70,6 +73,20 @@
 </div> <!-- /.row-fluid -->
 
 <script>
+    $filter = $('input[name=filter]')
+    var filter = function(e) {
+        console.log('filtering')
+        var keyword = $filter.val()
+        if (!keyword) $('tr.post').show()
+        $('tr.post').each(function() {
+            var $tr = $(this)
+            if (Boolean($tr.text().match(keyword))) $tr.show()
+            else $tr.hide()
+        })
+    }
+
+    $filter.keydown(filter).keyup(filter)
+
     $("tr.post").click(function(e) {
         var $target = $(e.target)
         if ($target.hasClass('btn') || $target.hasClass('icon-remove-sign')) return
