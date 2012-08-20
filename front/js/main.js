@@ -1,10 +1,15 @@
 var app = Sammy('#main', function() {
-    // TODO not using cookies so don't need this...
     $.ajaxSetup({
-        xhrFields: {withCredentials:true}
+        // TODO not using cookies so don't need this...
+        xhrFields: {withCredentials:true},
+        cache:false
     })
     this.use('Mustache')
     this.helper('rc', function(){ return new Sammy.RenderContext(this) })
+
+    this.before({}, function() { app.clearTemplateCache(); })
+    this.before({}, function() { $('.modal').modal('hide') })
+    this.before({}, function() { cadigan.fetch() })
 
     this.get('/', function() {
         this.rc()
@@ -13,9 +18,12 @@ var app = Sammy('#main', function() {
     })
 
     this.get('#/', function() {
-        this.rc()
-            .loadPartials({post:'/templates/post.mustache'})
-            .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
+        var rc = this.rc()
+        cadigan.fetch(function(err) {
+            if (err) throw err
+            rc.loadPartials({post:'/templates/post.mustache'})
+                .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
+        })
     })
 
     this.get('#/admin', function() {
@@ -30,9 +38,12 @@ var app = Sammy('#main', function() {
             .partial('/templates/admin.write.mustache')
     })
     this.get('#/admin/posts', function() {
-        this.rc()
-            .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
-            .partial('/templates/admin.posts.mustache', {posts:cadigan._posts})
+        var rc = this.rc()
+        cadigan.fetch(function(err) {
+            if (err) throw err
+            rc.loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
+                .partial('/templates/admin.posts.mustache', {posts:cadigan._posts})
+        })
     })
     this.get('#/admin/edit/:post_id', function() {
         $('.modal').modal('hide')
@@ -52,15 +63,20 @@ var app = Sammy('#main', function() {
         })
     })
     this.post('#/admin/publish', function() {
-        cadigan.publish({post_id:this.params.post_id}, function(err) {
+        var post_id = this.params.post_id
+        cadigan.publish({post_id:post_id}, function(err) {
             if (err) throw err
             $('.alerts').append($('#publishedalert').clone().show())
+            $($('tr[data-post_id='+post_id+']').find('td')[3]).html('<span class="icon-ok"></span>')
         })
+
     })
     this.post('#/admin/unpublish', function() {
-        cadigan.unpublish({post_id:this.params.post_id}, function(err) {
+        var post_id = this.params.post_id
+        cadigan.unpublish({post_id:post_id}, function(err) {
             if (err) throw err
             $('.alerts').append($('#unpublishedalert').clone().show())
+            $($('tr[data-post_id='+post_id+']').find('td')[3]).html('')
         })
     })
     this.post('#/auth', function() {
