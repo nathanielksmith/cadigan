@@ -57,6 +57,7 @@ cadigan =
             _.extend(doc, newness)
             this.store.save(doc, (err, doc) =>
                 return cb(err) if err
+                cb(null, doc)
             )
         )
 

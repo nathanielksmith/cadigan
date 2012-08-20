@@ -41,20 +41,18 @@
         save_timeout = setTimeout(function() {
             var cb = function(err, data) { // TODO this will work when data is actually sent from backend
                 if (err) throw err
-                console.log('updating')
+                $("#id").text(data._id)
+                $("#posteditor").attr('data-post_id', data._id)
+                save_timeout = null
                 $("#poststatus").html('<span class="saved icon-ok"></span> saved')
                     .addClass('alert-success')
                     .removeClass('alert-error')
-                save_timeout = null
-                $("#id").text(data.post_id)
-                $("#posteditor").attr('data-post_id', data.post_id)
             }
             var post = {
                 title: $('input[name=title]').val(),
                 content: text,
                 tags: $('input[name=tags]').val().split(',').map($.trim)
             }
-            console.log(post)
             if (post_id.match(/\d+/)) {
                 post._id = post_id
                 cadigan.update({post_id:post_id, newness:post}, cb)

@@ -22,7 +22,7 @@
             }
             var successwrap
             if (!success) {
-                successwrap = function(data) { cb(null, data) }
+                successwrap = cb.p(null)
             }
             else {
                 successwrap = function(data) {
