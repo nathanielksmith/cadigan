@@ -20,6 +20,7 @@ cadigan =
         )
 
     now: -> Date.now() / 1000
+    meta: (cb) -> this.store.get('meta', cb)
 
     new: (post, cb) ->
         post.created = this.now()
@@ -66,7 +67,7 @@ cadigan =
     search: (keyword, cb) ->
         filter = (doc) ->
             # check title, content, tags
-            return false if doc._id == 'auth'
+            return false if doc._id == 'auth' or doc._id = 'meta'
             check = [doc.title, doc.content]
             check = check.concat(doc.tags) if doc.tags
             reductor = (p,c) -> if c then p or c.match(keyword) else false
@@ -74,15 +75,7 @@ cadigan =
         this.store.scan(filter, cb)
 
     list: (cb) -> this.store.scan((doc) ->
-        doc._id != 'auth'
-    , cb)
-
-    published: (cb) -> this.store.scan((doc) ->
-        doc._id != 'auth' and doc.published = true
-    , cb)
-
-    drafts: (cb) -> this.store.scan((doc) ->
-        doc._id != 'auth' and doc.published = false
+        doc._id != 'auth' and doc._id != 'meta'
     , cb)
 
 exports.cadigan = cadigan

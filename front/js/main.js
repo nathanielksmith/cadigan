@@ -117,6 +117,11 @@ app.md = function(text) { return converter.makeHtml(text) }
 
 $(function() {
     cadigan.init(function(err) {
+        cadigan.meta(function(err, meta) {
+            document.title = meta.site_name
+            $("#title").text(meta.site_name)
+        })
+
         cadigan.fetch(function(err) {
             app.run('#/')
         })

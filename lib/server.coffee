@@ -45,6 +45,15 @@ app.post('/api/check-auth', (req, res) ->
         )
     )
 )
+
+app.get('/api/meta', (req, res) ->
+    cadigan.init((err) ->
+        cadigan.meta((err, meta) ->
+            res.send if err then 500 else meta
+        )
+    )
+)
+
 # get
 app.get('/api/post', (req, res) ->
     cadigan.init((err) ->
@@ -143,21 +152,26 @@ exports.start = (hostname, port) ->
                 )
                 rl.write("looks like you need to set up this site.\n")
                 async.series(
-                    username: (cb) -> rl.question 'username? ', cb
-                    password: (cb) -> rl.question 'password? ', cb
-                    site_name: (cb) -> rl.question 'site name? ', cb
+                    username: (cb) -> rl.question 'username? ', (answer) -> cb null, answer
+                    password: (cb) -> rl.question 'password? ', (answer) -> cb null, answer
+                    site_name: (cb) -> rl.question 'site name? ', (answer) -> cb null, answer
                 , (err, input) ->
+                    throw err if err
                     auth =
                         _id: 'auth'
                         username: input.username
                         password: hash.sha256(input.password)
-                        site_name: input.site_name
-                    cadigan.store.save(auth, (err, doc)->
+                    cadigan.store.save(auth, (err, doc) ->
                         throw err if err
-                        rl.write("got you down as #{input.username}\n")
-                        rl.write("your site is called #{input.site_name}\n")
-                        rl.close
-                        start()
+                        meta =
+                            _id: 'meta'
+                            site_name:input.site_name
+                        cadigan.store.save(meta, (err, doc) ->
+                            rl.write("got you down as #{input.username}\n")
+                            rl.write("your site is called #{input.site_name}\n")
+                            rl.close
+                            start()
+                        )
                     )
                 )
             else

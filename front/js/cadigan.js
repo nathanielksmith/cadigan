@@ -61,6 +61,7 @@
             cb(null, posts)
         },
         'delete': mkdel('/post'),
+        meta: mkjson('/meta'),
         //get: mkjson('/post'),
         get: function(data, cb) {
             var post = this._posts.filter(function(x) {
