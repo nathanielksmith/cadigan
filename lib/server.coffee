@@ -1,6 +1,6 @@
 readline = require 'readline'
 
-
+async = require 'async'
 express = require 'express'
 hash = require 'node_hash'
 
@@ -141,19 +141,23 @@ exports.start = (hostname, port) ->
                     input:process.stdin
                     output:process.stdout
                 )
-                rl.write("looks like you need to set up some auth.\n")
-                rl.question('username? ', (username) ->
-                    rl.question('password? ', (password) ->
-                        auth =
-                            _id: 'auth'
-                            username: username
-                            password: hash.sha256(password)
-                        cadigan.store.save(auth, (err, doc)->
-                            throw err if err
-                            rl.write("got you down as #{username}\n")
-                            rl.close
-                            start()
-                        )
+                rl.write("looks like you need to set up this site.\n")
+                async.series(
+                    username: (cb) -> rl.question 'username? ', cb
+                    password: (cb) -> rl.question 'password? ', cb
+                    site_name: (cb) -> rl.question 'site name? ', cb
+                , (err, input) ->
+                    auth =
+                        _id: 'auth'
+                        username: input.username
+                        password: hash.sha256(input.password)
+                        site_name: input.site_name
+                    cadigan.store.save(auth, (err, doc)->
+                        throw err if err
+                        rl.write("got you down as #{input.username}\n")
+                        rl.write("your site is called #{input.site_name}\n")
+                        rl.close
+                        start()
                     )
                 )
             else

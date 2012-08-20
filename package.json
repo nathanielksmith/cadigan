@@ -16,6 +16,7 @@
     "blog"
   ],
   "dependencies": {
+    "async": "0.1.22",
     "cliff": "0.1.8",
     "docstore": "0.1.1",
     "express": "3.0.0rc3",
