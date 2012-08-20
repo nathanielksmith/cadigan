@@ -8,8 +8,13 @@ cadigan = (require '../lib/cadigan').cadigan
 
 app = express()
 app.use express.bodyParser()
+app.use express.static "#{__dirname}/../front"
+app.use express.favicon()
+
 
 # TODO cadigan middleware for init
+
+app.engine('.html', (str) -> str)
 
 ensure_auth = (req, res, next) ->
     cadigan.init((err) ->
@@ -20,6 +25,9 @@ ensure_auth = (req, res, next) ->
                 res.send 403
         )
     )
+
+# index
+app.get('/', (req,res) -> res.render 'index.html')
 
 # check-auth
 app.post('/api/check-auth', (req, res) ->

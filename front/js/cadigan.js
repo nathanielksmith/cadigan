@@ -63,7 +63,7 @@
             cb(null, post)
         },
         fetch: mkjson('/posts', function(data, cb) {
-            this._posts = data.sort(function(a,b) { return a-b })
+            this._posts = data.sort(function(a,b) { return -(a.created-b.created) })
             cb(null)
         }),
         search: mkjson('/search'),
