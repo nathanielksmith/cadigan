@@ -9,8 +9,6 @@ cliff = require 'cliff'
 cadigan = (require '../lib/cadigan').cadigan
 start_cadigan_server = (require '../lib/server').start
 
-# TODO wrap cadigan.* methods with the commands below
-
 cli =
     init: (cb) -> cadigan.init(cb)
     editor: (filename, cb) ->

@@ -1,3 +1,4 @@
+readline = require 'readline'
 cadigan = (require '../lib/cadigan').cadigan
 
 express = require 'express'
@@ -54,7 +55,36 @@ app.post('/api/update', (req, res) ->
 )
 
 exports.start = (hostname, port) ->
-    hostname = hostname or 'localhost'
-    port = port or 3000
-    app.listen(port, hostname)
-    console.log "cadigan listening at #{hostname}:#{port}"
+    cadigan.init((err) ->
+        cadigan.store.get('auth', (err, doc) ->
+            throw err if err
+            start = ->
+                hostname = hostname or 'localhost'
+                port = port or 3000
+                app.listen(port, hostname)
+                console.log "cadigan listening at #{hostname}:#{port}"
+            if not doc
+                # generate auth, save
+                rl = readline.createInterface(
+                    input:process.stdin
+                    output:process.stdout
+                )
+                rl.write("looks like you need to set up some auth.\n")
+                rl.question('username? ', (username) ->
+                    rl.question('password? ', (password) ->
+                        auth =
+                            _id: 'auth'
+                            username: username
+                            password: password
+                        cadigan.store.save(auth, (err, doc)->
+                            throw err if err
+                            rl.write("got you down as #{username}\n")
+                            rl.close
+                            start()
+                        )
+                    )
+                )
+            else
+                start()
+        )
+    )
