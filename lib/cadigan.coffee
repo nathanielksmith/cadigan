@@ -66,12 +66,15 @@ cadigan =
     search: (keyword, cb) ->
         filter = (doc) ->
             # check title, content, tags
+            return false if doc._id == 'auth'
             check = [doc.title, doc.content]
             check = check.concat(doc.tags) if doc.tags
             reductor = (p,c) -> if c then p or c.match(keyword) else false
             check.reduce(reductor, false)
         this.store.scan(filter, cb)
 
-    list: (cb) -> this.store.scan((->true), cb)
+    list: (cb) -> this.store.scan((doc) ->
+        doc._id != 'auth'
+    , cb)
 
 exports.cadigan = cadigan
