@@ -54,6 +54,12 @@
             cb(null)
         },
         list: function(cb) { cb(null, this._posts) },
+        by_tag: function(data, cb) {
+            var posts = cadigan._posts.filter(function(x) {
+                return Boolean(x.tags.filter(function(t) { return t == data.tag })[0])
+            })
+            cb(null, posts)
+        },
         'delete': mkdel('/post'),
         //get: mkjson('/post'),
         get: function(data, cb) {

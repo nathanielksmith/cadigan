@@ -26,6 +26,27 @@ var app = Sammy('#main', function() {
         })
     })
 
+    this.get('#/post/:post_id', function() {
+        var post_id = this.params.post_id
+        rc = this.rc()
+        cadigan.get({post_id:post_id}, function(err, post) {
+            if (err) throw err
+            console.log(post)
+            rc.loadPartials({post:'/templates/post.mustache'})
+                .partial('/templates/index.mustache', {posts:[post]})
+        })
+    })
+
+    this.get('#/tag/:tag', function() {
+        var tag = this.params.tag
+        var rc = this.rc()
+        cadigan.by_tag({tag:tag}, function(err, posts) {
+            if (err) throw err
+            rc.loadPartials({post:'/templates/post.mustache'})
+                .partial('/templates/index.mustache', {posts:posts.filter(function(x) { return x.published == true })})
+        })
+    })
+
     this.get('#/admin', function() {
         this.rc()
             .loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
