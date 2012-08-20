@@ -41,6 +41,15 @@ cadigan =
             )
         )
 
+    unpublish: (post_id, cb) ->
+        this.store.get(post_id, (err, doc) =>
+            return cb(err, this) if err
+            doc.published = false
+            this.store.save(doc, (err, doc) =>
+                return cb(err) if err
+                cb(null, doc)
+            )
+        )
     update: (post_id, newness, cb) ->
         this.store.get(post_id, (err, doc) =>
             doc.updated = this.now()
