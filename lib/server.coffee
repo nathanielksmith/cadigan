@@ -39,10 +39,20 @@ app.post('/api/check-auth', (req, res) ->
 )
 # get
 app.get('/api/post', (req, res) ->
+    cadigan.init((err) ->
+        cadigan.get(req.body.post_id, (err, doc) ->
+            res.send if err then 500 else doc
+        )
+    )
 )
 
 # search
 app.get('/api/search', (req, res) ->
+    cadigan.init((err) ->
+        cadigan.search(req.keyword, (err, docs) ->
+            res.send if err then 500 else docs
+        )
+    )
 )
 
 # fetch
@@ -58,31 +68,55 @@ app.get('/api/posts', (req, res) ->
 # delete
 app.delete('/api/post', ensure_auth, (req, res) ->
     console.log req.body
-    res.send 200
+    cadigan.init((err) ->
+        cadigan.delete(req.body.post_id, (err) ->
+            res.send if err then 500 else 200
+        )
+    )
 )
 
 # new
 app.post('/api/post', ensure_auth, (req, res) ->
-    console.log(req.body)
-    res.send 200
+    console.log req.body
+    cadigan.init((err) ->
+        post =
+            title: req.body.title
+            tags: req.body.tags
+            content: req.body.content
+        cadigan.new(post, (err, post) ->
+            res.send if err then 500 else doc
+        )
+    )
 )
 
 # publish
 app.post('/api/publish', ensure_auth, (req, res) ->
-    console.log(req.body)
-    res.send 200
+    console.log req.body
+    cadigan.init((err) ->
+        cadigan.unpublish(req.body.post_id, (err) ->
+            res.send if err then 500 else 200
+        )
+    )
 )
 
 # unpublish
 app.post('/api/unpublish', ensure_auth, (req, res) ->
-    console.log(req.body)
-    res.send 200
+    console.log req.body
+    cadigan.init((err) ->
+        cadigan.unpublish(req.body.post_id, (err) ->
+            res.send if err then 500 else 200
+        )
+    )
 )
 
 # update (editing)
 app.post('/api/update', ensure_auth, (req, res) ->
-    console.log(req.body)
-    res.send 200
+    console.log req.body
+    cadigan.init((err) ->
+        cadigan.update(req.body.post_id, req.body.newness, (err) ->
+            res.send if err then 500 else 200
+        )
+    )
 )
 
 exports.start = (hostname, port) ->
