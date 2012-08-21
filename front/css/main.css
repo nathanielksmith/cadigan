@@ -1,3 +1,4 @@
 .template { display:none; }
 tr.post { cursor:pointer; }
 form.action { display:inline; }
+#title { color:#333; }
