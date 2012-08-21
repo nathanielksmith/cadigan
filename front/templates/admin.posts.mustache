@@ -29,27 +29,23 @@
                                         <a href="#/admin/edit/{{_id}}" ><span class="icon-pencil"></span> edit</a>
                                     </li>
                                     <li>
-                                        {{#published}}
-                                        <a class="dropdown">
+                                        <a href="#" class="dropdown" data-submit="#draft" >
                                             <span class="icon-eye-close"></span>
                                             move to drafts
                                         </a>
                                         <form class="action" id="draft" action="#/admin/unpublish" method="post">
                                             <input type="hidden" name="post_id" value="{{_id}}" />
                                         </form>
-                                        {{/published}}
-                                        {{^published}}
-                                        <a class="dropdown">
+                                        <a href="#" class="dropdown" data-submit="#publish">
                                             <span class="icon-eye-open"></span>
                                             publish
                                         </a>
                                         <form class="action" id="publish" action="#/admin/publish" method="post">
                                             <input type="hidden" name="post_id" value="{{_id}}" />
                                         </form>
-                                        {{/published}}
                                     </li>
                                     <li>
-                                        <a href="#" class="dropdown"><span class="icon-trash"></span> delete</a>
+                                        <a href="#" class="dropdown" data-submit="#delete"><span class="icon-trash"></span> delete</a>
                                         <form class="action" id="delete" action="#/admin/delete" method="post">
                                             <input type="hidden" name="post_id" value="{{_id}}" />
                                         </form>
@@ -85,13 +81,8 @@
 
     $filter.keydown(filter).keyup(filter)
 
-//    $("tr.post").click(function(e) {
-//        var $target = $(e.target)
-//        if ($target.hasClass('btn') || $target.hasClass('icon-remove-sign')) return
-//
-//        var $tr = $target.hasClass('post') ? $target : $target.parents('tr.post')
-//        var post_id = $tr.attr('data-post_id')
-//
-//        $('.modal.'+post_id).modal('show')
-//    })
+    $('a.dropdown').click(function(e) {
+        e.preventDefault()
+        $($(e.target).attr('data-submit')).submit()
+    })
 </script>
