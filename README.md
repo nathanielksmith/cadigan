@@ -2,10 +2,6 @@
 
 _is a tiny, zeroconf blog engine/server_
 
-## status
-
-everything works but performance is shit and code is somewhat redundant.
-
 ## features
 
  * CLI interface (use your $EDITOR)
@@ -19,6 +15,12 @@ everything works but performance is shit and code is somewhat redundant.
         ssh myserver.com
         npm install -g cadigan
         cadigan start myserver.com 80
+
+## status
+
+everything works but performance is not given much thought and code could be
+far cleaner. Also security is hateful as it does not currently support SSL; for
+srs though you'd probably be running behind nginx or whatever anyway.
 
 ## changelog
 
@@ -39,6 +41,9 @@ everything works but performance is shit and code is somewhat redundant.
  * viewing posts
  * tag/post links
  * cli interface
+ * autosave
+ * tagging
+ * live markdown preview
 
 ## author
 
