@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/nathanielksmith/cadigan.png)](http://travis-ci.org/nathanielksmith/cadigan)
 # cadigan
 
 _is a tiny, zeroconf blog engine/server_
