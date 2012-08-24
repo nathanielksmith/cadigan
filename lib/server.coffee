@@ -3,6 +3,8 @@ readline = require 'readline'
 async = require 'async'
 express = require 'express'
 hash = require 'node_hash'
+consolidate = require 'consolidate'
+wmd = require 'wmd'
 
 cadigan = (require '../lib/cadigan').cadigan
 
@@ -15,6 +17,8 @@ app.use express.favicon()
 # TODO cadigan middleware for init
 
 app.engine('.html', (str) -> str)
+app.engine('.xml', consolidate.mustache)
+app.set('views', "#{__dirname}/../front")
 
 ensure_auth = (req, res, next) ->
     cadigan.init((err) ->
@@ -28,6 +32,48 @@ ensure_auth = (req, res, next) ->
 
 # index
 app.get('/', (req,res) -> res.render 'index.html')
+
+# feeds
+mkfeed = (cb) ->
+    datefmt = (ts) -> String(new Date(ts*1000))
+    domain = app.get('domain')
+    port = app.get('port')
+    domain  = "#{domain}:#{port}" if port and port != 80
+    updated = String(new Date())
+    year = (new Date()).getYear() + 1900
+    async.series(
+        init: cadigan.init
+        meta: cadigan.meta
+        posts: cadigan.list
+    , (err, result) ->
+        posts = result.posts.sort((a,b)-> a.created - b.created).filter((x) -> x.published).map (x)->
+            x.content = wmd(x.content).html
+            x.domain = domain
+            x.created = datefmt x.created
+            x.updated = datefmt x.updated
+            x.year = year
+            x
+        context =
+            name: result.meta.site_name
+            posts: posts
+            domain: domain
+            author: result.meta.author or 'cadigan user'
+            updated: updated
+            year: year
+        app.render 'feed.xml', context, cb
+    )
+
+update_feed = -> mkfeed (err, xml) -> app.set 'feed', xml
+
+app.get('/feed', (req, res) ->
+    if app.get 'feed'
+        res.send app.get('feed')
+    else
+        mkfeed (err, xml) ->
+            console.error err if err
+            res.send if err then 500 else xml
+            app.set 'feed', xml
+)
 
 # check-auth
 app.post('/api/check-auth', (req, res) ->
@@ -88,6 +134,7 @@ app.delete('/api/post', ensure_auth, (req, res) ->
     cadigan.init((err) ->
         cadigan.delete(req.body.post_id, (err) ->
             res.send if err then 500 else 200
+            update_feed()
         )
     )
 )
@@ -102,6 +149,7 @@ app.post('/api/post', ensure_auth, (req, res) ->
             content: req.body.content
         cadigan.new(post, (err, post) ->
             res.send if err then 500 else post
+            update_feed()
         )
     )
 )
@@ -112,6 +160,7 @@ app.post('/api/publish', ensure_auth, (req, res) ->
     cadigan.init((err) ->
         cadigan.publish(req.body.post_id, (err) ->
             res.send if err then 500 else 200
+            update_feed()
         )
     )
 )
@@ -122,6 +171,7 @@ app.post('/api/unpublish', ensure_auth, (req, res) ->
     cadigan.init((err) ->
         cadigan.unpublish(req.body.post_id, (err) ->
             res.send if err then 500 else 200
+            update_feed()
         )
     )
 )
@@ -132,6 +182,7 @@ app.post('/api/update', ensure_auth, (req, res) ->
     cadigan.init((err) ->
         cadigan.update(req.body.post_id, req.body.newness, (err) ->
             res.send if err then 500 else 200
+            update_feed()
         )
     )
 )
