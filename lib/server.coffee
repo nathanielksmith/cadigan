@@ -57,7 +57,7 @@ mkfeed = (cb) ->
             name: result.meta.site_name
             posts: posts
             domain: domain
-            author: result.meta.author or 'cadigan user'
+            author: result.meta.author_name or 'cadigan user'
             updated: updated
             year: year
         app.render 'feed.xml', context, cb
@@ -193,39 +193,44 @@ exports.start = (hostname, port) ->
             start = ->
                 hostname = hostname or 'localhost'
                 port = port or 3000
+                app.set('domain', hostname)
+                app.set('port', port)
                 app.listen(port, hostname)
                 console.log "cadigan listening at #{hostname}:#{port}"
-            if err
-                # generate auth, save
-                rl = readline.createInterface(
-                    input:process.stdin
-                    output:process.stdout
-                )
-                rl.write("looks like you need to set up this site.\n")
-                async.series(
-                    username: (cb) -> rl.question 'username? ', (answer) -> cb null, answer
-                    password: (cb) -> rl.question 'password? ', (answer) -> cb null, answer
-                    site_name: (cb) -> rl.question 'site name? ', (answer) -> cb null, answer
-                , (err, input) ->
+            unless err
+                return start()
+
+            # generate auth, save
+            rl = readline.createInterface(
+                input:process.stdin
+                output:process.stdout
+            )
+            rl.write("looks like you need to set up this site.\n")
+            async.series(
+                username: (cb) -> rl.question 'username? ', (answer) -> cb null, answer
+                password: (cb) -> rl.question 'password? ', (answer) -> cb null, answer
+                site_name: (cb) -> rl.question 'site name? ', (answer) -> cb null, answer
+                author_name: (cb) -> rl.question 'your name? (used to display author)', (answer) -> cb null, answer
+            , (err, input) ->
+                throw err if err
+                auth =
+                    _id: 'auth'
+                    username: input.username
+                    password: hash.sha256(input.password)
+                cadigan.store.save(auth, (err, doc) ->
                     throw err if err
-                    auth =
-                        _id: 'auth'
-                        username: input.username
-                        password: hash.sha256(input.password)
-                    cadigan.store.save(auth, (err, doc) ->
-                        throw err if err
-                        meta =
-                            _id: 'meta'
-                            site_name:input.site_name
-                        cadigan.store.save(meta, (err, doc) ->
-                            rl.write("got you down as #{input.username}\n")
-                            rl.write("your site is called #{input.site_name}\n")
-                            rl.close
-                            start()
-                        )
+                    meta =
+                        _id: 'meta'
+                        site_name:input.site_name
+                        author_name:input.author_name
+                    cadigan.store.save(meta, (err, doc) ->
+                        rl.write("got you down as #{input.username}\n")
+                        rl.write("your site is called #{input.site_name}\n")
+                        rl.write("your name is #{input.author_name}\n")
+                        rl.close
+                        start()
                     )
                 )
-            else
-                start()
+            )
         )
     )
