@@ -26,7 +26,6 @@ srs though you'd probably be running behind nginx or whatever anyway.
 
 in no particular order:
 
- * front page search
  * pagination
  * plugins (site-wide and per-post)
  * themes
@@ -36,6 +35,7 @@ in no particular order:
 #### 1.2.0
 
  * atom feed
+ * front page search
 
 #### 1.1.0
 
