@@ -75,6 +75,17 @@ var app = Sammy('#main', function() {
                 .partial('/templates/admin.write.mustache', post)
         })
     })
+    this.get('#/search', function() {
+        var rc = this.rc()
+        var keyword = this.params.keyword
+        cadigan.fetch(function(err) {
+            if (err) throw err
+            cadigan.search({keyword:keyword}, function(err, posts) {
+                rc.loadPartials({post:'/templates/post.mustache'})
+                    .partial('/templates/index.mustache', {posts:posts.filter(function(x) { return x.published == true })})
+            })
+        })
+    })
     this.post('#/admin/delete', function() {
         var post_id = this.params.post_id
         cadigan.delete({post_id:post_id}, function(err) {

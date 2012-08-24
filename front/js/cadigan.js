@@ -80,7 +80,15 @@
             })
             cb(null)
         }),
-        search: mkjson('/search'),
+        search: function(data, cb) {
+            cb(null, this._posts.filter(function(x) {
+                var check = [x.content, x.title].concat(x.tags)
+                var reductor = function(p,c) {
+                    return p || Boolean(c.match(data.keyword))
+                }
+                return check.reduce(reductor, false)
+            }))
+        },
         'new': mkpost('/post'),
         publish: mkpost('/publish'),
         unpublish: mkpost('/unpublish'),
