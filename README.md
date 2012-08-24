@@ -22,7 +22,20 @@ everything works but performance is not given much thought and code could be
 far cleaner. Also security is hateful as it does not currently support SSL; for
 srs though you'd probably be running behind nginx or whatever anyway.
 
+## roadmap
+
+in no particular order:
+
+ * front page search
+ * pagination
+ * plugins (site-wide and per-post)
+ * themes
+
 ## changelog
+
+#### 1.2.0
+
+ * atom feed
 
 #### 1.1.0
 
