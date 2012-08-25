@@ -9,6 +9,8 @@ _is a tiny, zeroconf blog engine/server_
  * drafts/published
  * tagging
  * post permalinks
+ * atom feed
+ * search
 
 ## install
 
@@ -26,6 +28,7 @@ srs though you'd probably be running behind nginx or whatever anyway.
 
 in no particular order:
 
+ * post scheduling / backdating
  * pagination
  * plugins (site-wide and per-post)
  * themes
@@ -36,6 +39,7 @@ in no particular order:
 
  * atom feed
  * front page search
+ * bugfix: dropdowns were hilariously broken in admin
 
 #### 1.1.0
 
