@@ -35,11 +35,14 @@ in no particular order:
 
 ## changelog
 
+#### 1.2.1
+
+ * bugfix: dropdowns were hilariously broken in admin
+
 #### 1.2.0
 
  * atom feed
  * front page search
- * bugfix: dropdowns were hilariously broken in admin
 
 #### 1.1.0
 
