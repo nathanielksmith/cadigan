@@ -24,10 +24,13 @@ everything works but performance is not given much thought and code could be
 far cleaner. Also security is hateful as it does not currently support SSL; for
 srs though you'd probably be running behind nginx or whatever anyway.
 
+i'm dog-fooding this at [chip the glasses](http://chiptheglasses.com).
+
 ## roadmap
 
 in no particular order:
 
+ * actually caring about performance
  * post scheduling / backdating
  * pagination
  * plugins (site-wide and per-post)
