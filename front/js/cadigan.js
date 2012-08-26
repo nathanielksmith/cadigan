@@ -57,9 +57,41 @@
     })
 
     cadigan = {
+        store: {
+            get: function(k) {
+                return JSON.parse(window.localStorage.getItem(k))
+            },
+            set: function(k, v) {
+                window.localStorage.setItem(k, JSON.stringify(v))
+            }
+        },
         init: function(cb) {
-            this.posts = []
-            cb(null)
+            var last_sync = Number(this.store.get('last_sync'))
+            var now = Number(new Date())
+            var self = this
+            if (!last_sync || (now-last_sync) > 18000000) { // 5 hours
+                async.parallel([
+                    this.get_meta,
+                    this.fetch
+                ], function(err) {
+                    if (err) return cb(err)
+                    self.store.set('last_sync', now)
+                    self.store.set('posts', cadigan.posts)
+                    self.store.set('meta', cadigan.meta)
+                    cb(null)
+                })
+            }
+            else {
+                this.posts = this.store.get('posts')
+                this.meta = this.store.get('meta')
+                this.update_views()
+                cb(null)
+            }
+        },
+        update_views: function() {
+            published = function(x) { return x.published == true }
+            this.published = this.posts.filter(published)
+            this.drafts = this.posts.filter(published.inverse())
         },
         list: function(cb) { cb(null, this.posts) },
         by_tag: function(data, cb) {
@@ -69,7 +101,10 @@
             cb(null, posts)
         },
         'delete': mkdel('/post'),
-        meta: mkjson('/meta'),
+        get_meta: mkjson('/meta', function(data, cb) {
+            this.meta = data
+            cb(null, data)
+        }),
         //get: mkjson('/post'),
         get: function(data, cb) {
             var post = this.posts.filter(function(x) {
@@ -86,10 +121,8 @@
                 x.pretty_content = converter.makeHtml(x.content)
                 return x
             })
-            published = function(x) { return x.published == true }
-            this.published = this.posts.filter(published)
-            this.drafts = this.posts.filter(published.inverse())
-            cb(null)
+            this.update_views()
+            cb(null, this.posts)
         }),
         search: function(data, cb) {
             cb(null, this.published.filter(function(x) {

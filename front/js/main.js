@@ -9,15 +9,9 @@ var app = Sammy('#main', function() {
 
     this.before({}, function() { $('.modal').modal('hide') })
 
-    this.get('/', function() {
-        this.rc()
-            .loadPartials({post:'/templates/post.mustache'})
-            .partial('/templates/index.mustache', {posts:cadigan.published})
-    })
-
     this.get('#/', function() {
         this.rc()
-            .loadPartials({post:'/templates/post.mustache'})
+            .loadPartials({post:'/templates/post.preview.mustache'})
             .partial('/templates/index.mustache', {posts:cadigan.published})
     })
 
@@ -26,9 +20,8 @@ var app = Sammy('#main', function() {
         rc = this.rc()
         cadigan.get({post_id:post_id}, function(err, post) {
             if (err) throw err
-            console.log(post)
-            rc.loadPartials({post:'/templates/post.mustache'})
-                .partial('/templates/index.mustache', {posts:[post]})
+            // don't make post top level; will likely need template-wide stuff for commenting stuff
+            rc.partial('/templates/post.mustache', {post:post})
         })
     })
 
@@ -37,7 +30,16 @@ var app = Sammy('#main', function() {
         var rc = this.rc()
         cadigan.by_tag({tag:tag}, function(err, posts) {
             if (err) throw err
-            rc.loadPartials({post:'/templates/post.mustache'})
+            rc.loadPartials({post:'/templates/post.preview.mustache'})
+                .partial('/templates/index.mustache', {posts:posts})
+        })
+    })
+
+    this.get('#/search', function() {
+        var rc = this.rc()
+        var keyword = this.params.keyword
+        cadigan.search({keyword:keyword}, function(err, posts) {
+            rc.loadPartials({post:'/templates/post.preview.mustache'})
                 .partial('/templates/index.mustache', {posts:posts})
         })
     })
@@ -68,14 +70,6 @@ var app = Sammy('#main', function() {
             console.log(post)
             rc.loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
                 .partial('/templates/admin.write.mustache', post)
-        })
-    })
-    this.get('#/search', function() {
-        var rc = this.rc()
-        var keyword = this.params.keyword
-        cadigan.search({keyword:keyword}, function(err, posts) {
-            rc.loadPartials({post:'/templates/post.mustache'})
-                .partial('/templates/index.mustache', {posts:posts})
         })
     })
     this.post('#/admin/delete', function() {
@@ -120,15 +114,9 @@ app.md = function(text) { return converter.makeHtml(text) }
 
 $(function() {
     cadigan.init(function(err) {
-        cadigan.meta(function(err, meta) {
-            if (err) throw err
-            document.title = meta.site_name
-            $("#title").text(meta.site_name)
-        })
-
-        cadigan.fetch(function(err) {
-            if (err) throw err
-            app.run('#/')
-        })
+        if (err) throw err
+        document.title = cadigan.meta.site_name
+        $("#title").text(cadigan.meta.site_name)
+        app.run('#/')
     })
 })
