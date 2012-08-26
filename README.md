@@ -45,6 +45,12 @@ in no particular order:
 
 ## changelog
 
+#### 1.3.0
+
+ * localstorage posts/metadata caching
+ * compressed front-end js, css
+ * vague style updates
+
 #### 1.2.1
 
  * bugfix: dropdowns were hilariously broken in admin
