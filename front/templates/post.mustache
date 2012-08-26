@@ -1,10 +1,27 @@
-{{#post}}
-<div class="post row-fluid">
-    <div style="margin-left:10%" class="span9">
-        <h2><a href="#/post/{{_id}}">{{ title }}</a></h2>
-        <p>{{{pretty_content}}}</p>
-        <sub>tags: {{#tags}}<a href="#/tag/{{.}}">{{.}}</a> {{/tags}}</sub><br />
-        <sub>published at {{pretty_created}}</sub>
-    </div> <!-- /.span6 -->
-</div> <!-- /.row-fluid.post -->
-{{/post}}
+<div class="row-fluid"> &nbsp; </div>
+<div class="row-fluid">
+    <div class="span3">
+    </div> <!-- /.span3 -->
+    <div class="span9">
+        {{#post}}
+            <div class="post row-fluid">
+            <div style="margin-left:10%" class="span9">
+                <h2><a href="#/post/{{_id}}">{{ title }}</a></h2>
+                <p>{{{pretty_content}}}</p>
+                <sub>tags: {{#tags}}<a href="#/tag/{{.}}">{{.}}</a> {{/tags}}</sub><br />
+                <sub>published at {{pretty_created}}</sub>
+            </div> <!-- /.span9 -->
+            </div> <!-- /.row-fluid -->
+        {{/post}}
+    </div> <!-- /.span9 -->
+</div> <!-- /.row-fluid -->
+
+
+
+
+
+
+<div class="row-fluid"> &nbsp; </div>
+<div class="row-fluid">
+    <div class="span3"></div>
+</div>
