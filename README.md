@@ -45,6 +45,10 @@ in no particular order:
 
 ## changelog
 
+#### 1.3.2
+
+ * bugfix: feed not linked from home page
+
 #### 1.3.1
 
  * bugfix: feeds were in reverse order
