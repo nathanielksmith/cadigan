@@ -12,13 +12,13 @@ var app = Sammy('#main', function() {
     this.get('/', function() {
         this.rc()
             .loadPartials({post:'/templates/post.mustache'})
-            .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
+            .partial('/templates/index.mustache', {posts:cadigan.published})
     })
 
     this.get('#/', function() {
         this.rc()
             .loadPartials({post:'/templates/post.mustache'})
-            .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
+            .partial('/templates/index.mustache', {posts:cadigan.published})
     })
 
     this.get('#/post/:post_id', function() {
@@ -38,7 +38,7 @@ var app = Sammy('#main', function() {
         cadigan.by_tag({tag:tag}, function(err, posts) {
             if (err) throw err
             rc.loadPartials({post:'/templates/post.mustache'})
-                .partial('/templates/index.mustache', {posts:posts.filter(function(x) { return x.published == true })})
+                .partial('/templates/index.mustache', {posts:posts})
         })
     })
 
@@ -58,7 +58,7 @@ var app = Sammy('#main', function() {
         cadigan.fetch(function(err) {
             if (err) throw err
             rc.loadPartials({sidebar:'/templates/admin.sidebar.mustache'})
-                .partial('/templates/admin.posts.mustache', {posts:cadigan._posts})
+                .partial('/templates/admin.posts.mustache', {posts:cadigan.posts})
         })
     })
     this.get('#/admin/edit/:post_id', function() {
@@ -75,7 +75,7 @@ var app = Sammy('#main', function() {
         var keyword = this.params.keyword
         cadigan.search({keyword:keyword}, function(err, posts) {
             rc.loadPartials({post:'/templates/post.mustache'})
-                .partial('/templates/index.mustache', {posts:posts.filter(function(x) { return x.published == true })})
+                .partial('/templates/index.mustache', {posts:posts})
         })
     })
     this.post('#/admin/delete', function() {
@@ -121,11 +121,13 @@ app.md = function(text) { return converter.makeHtml(text) }
 $(function() {
     cadigan.init(function(err) {
         cadigan.meta(function(err, meta) {
+            if (err) throw err
             document.title = meta.site_name
             $("#title").text(meta.site_name)
         })
 
         cadigan.fetch(function(err) {
+            if (err) throw err
             app.run('#/')
         })
     })

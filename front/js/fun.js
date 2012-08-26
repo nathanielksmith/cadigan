@@ -7,3 +7,11 @@ Function.prototype.p = function() {
         return f.apply(this, args.concat(inner_args))
     };
 };
+
+Function.prototype.inverse = function() {
+    var f = this
+    return function() {
+        var args = toa(arguments)
+        return !Boolean(f.apply(this, args))
+    }
+}

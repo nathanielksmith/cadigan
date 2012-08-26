@@ -58,12 +58,12 @@
 
     cadigan = {
         init: function(cb) {
-            this._posts = []
+            this.posts = []
             cb(null)
         },
-        list: function(cb) { cb(null, this._posts) },
+        list: function(cb) { cb(null, this.posts) },
         by_tag: function(data, cb) {
-            var posts = cadigan._posts.filter(function(x) {
+            var posts = cadigan.published.filter(function(x) {
                 return Boolean(x.tags.filter(function(t) { return t == data.tag })[0])
             })
             cb(null, posts)
@@ -72,13 +72,13 @@
         meta: mkjson('/meta'),
         //get: mkjson('/post'),
         get: function(data, cb) {
-            var post = this._posts.filter(function(x) {
+            var post = this.posts.filter(function(x) {
                 return x._id == data.post_id
             })[0]
             cb(null, post)
         },
         fetch: mkjson('/posts', function(data, cb) {
-            this._posts = data.sort(function(a,b) { return -(a.created-b.created) }).map(function(x) {
+            this.posts = data.sort(function(a,b) { return -(a.created-b.created) }).map(function(x) {
                 var datefmt = function(ts) { return String(new Date(ts*1000)).split(' ').slice(0,5).join(' ') }
                 x.pretty_created = datefmt(x.created)
                 x.pretty_updated = datefmt(x.updated)
@@ -86,10 +86,13 @@
                 x.pretty_content = converter.makeHtml(x.content)
                 return x
             })
+            published = function(x) { return x.published == true }
+            this.published = this.posts.filter(published)
+            this.drafts = this.posts.filter(published.inverse())
             cb(null)
         }),
         search: function(data, cb) {
-            cb(null, this._posts.filter(function(x) {
+            cb(null, this.published.filter(function(x) {
                 var check = [x.content, x.title].concat(x.tags)
                 var reductor = function(p,c) {
                     return p || Boolean(c.match(data.keyword))
