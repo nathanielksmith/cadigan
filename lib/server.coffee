@@ -46,7 +46,7 @@ mkfeed = (cb) ->
         meta: cadigan.meta
         posts: cadigan.list
     , (err, result) ->
-        posts = result.posts.sort((a,b)-> a.created - b.created).filter((x) -> x.published).map (x)->
+        posts = result.posts.sort((a,b)-> -(a.created - b.created)).filter((x) -> x.published).map (x)->
             x.content = wmd(x.content).html
             x.domain = domain
             x.created = datefmt x.created

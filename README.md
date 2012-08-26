@@ -45,6 +45,10 @@ in no particular order:
 
 ## changelog
 
+#### 1.3.1
+
+ * bugfix: feeds were in reverse order
+
 #### 1.3.0
 
  * localstorage posts/metadata caching
