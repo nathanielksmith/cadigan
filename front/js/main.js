@@ -7,9 +7,7 @@ var app = Sammy('#main', function() {
     this.use('Mustache')
     this.helper('rc', function(){ return new Sammy.RenderContext(this) })
 
-    this.before({}, function() { app.clearTemplateCache(); })
     this.before({}, function() { $('.modal').modal('hide') })
-    this.before({}, function() { cadigan.fetch() })
 
     this.get('/', function() {
         this.rc()
@@ -18,12 +16,9 @@ var app = Sammy('#main', function() {
     })
 
     this.get('#/', function() {
-        var rc = this.rc()
-        cadigan.fetch(function(err) {
-            if (err) throw err
-            rc.loadPartials({post:'/templates/post.mustache'})
-                .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
-        })
+        this.rc()
+            .loadPartials({post:'/templates/post.mustache'})
+            .partial('/templates/index.mustache', {posts:cadigan._posts.filter(function(x) { return x.published == true })})
     })
 
     this.get('#/post/:post_id', function() {
@@ -78,12 +73,9 @@ var app = Sammy('#main', function() {
     this.get('#/search', function() {
         var rc = this.rc()
         var keyword = this.params.keyword
-        cadigan.fetch(function(err) {
-            if (err) throw err
-            cadigan.search({keyword:keyword}, function(err, posts) {
-                rc.loadPartials({post:'/templates/post.mustache'})
-                    .partial('/templates/index.mustache', {posts:posts.filter(function(x) { return x.published == true })})
-            })
+        cadigan.search({keyword:keyword}, function(err, posts) {
+            rc.loadPartials({post:'/templates/post.mustache'})
+                .partial('/templates/index.mustache', {posts:posts.filter(function(x) { return x.published == true })})
         })
     })
     this.post('#/admin/delete', function() {
