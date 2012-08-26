@@ -36,6 +36,8 @@ i'm dog-fooding this at [chip the glasses](http://chiptheglasses.com).
 in no particular order:
 
  * actually caring about performance
+ * post summaries
+ * post slugging
  * post scheduling / backdating
  * pagination
  * plugins (site-wide and per-post)
