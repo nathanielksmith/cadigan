@@ -17,6 +17,7 @@ _is a tiny, zeroconf blog engine/server_
         ssh myserver.com
         npm install -g cadigan
         cadigan start myserver.com 80
+        # go to myserver.com:80/admin to start writing
 
 ## running with forever
 
@@ -24,9 +25,9 @@ _is a tiny, zeroconf blog engine/server_
 
 ## status
 
-everything works but performance is not given much thought and code could be
-far cleaner. Also security is hateful as it does not currently support SSL; for
-srs though you'd probably be running behind nginx or whatever anyway.
+things work and it's not ass-slow anymore. code could be far cleaner. Also
+security is hateful as it does not currently support SSL; for srs though you'd
+probably be running behind nginx or whatever anyway.
 
 i'm dog-fooding this at [chip the glasses](http://chiptheglasses.com).
 
@@ -35,7 +36,8 @@ i'm dog-fooding this at [chip the glasses](http://chiptheglasses.com).
 
 in no particular order:
 
- * actually caring about performance
+ * port to Backbone (replacing sammy.js)
+ * SSL for admin
  * post summaries
  * post slugging
  * post scheduling / backdating
