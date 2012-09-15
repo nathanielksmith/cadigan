@@ -1,11 +1,16 @@
-#!/usr/local/bin/coffee
-cli = (require '../lib/cli').cli
+#!/usr/bin/env node
 
-[command, args] = [process.argv[2], process.argv[3..]]
+var cli = require('../lib/cli').cli
 
-cli.init((err) ->
-    throw err if err
-    cli[command]?.call(cli, args, (err) ->
-        throw err if err
-    )
-)
+var command = process.argv[2]
+var args = process.argv.slice(3)
+
+cli.init(function(err) {
+    if (err) { throw err }
+    if (cli[command]) {
+        cli[command].call(cli, args, function(err) {
+            if (err) { throw err }
+        })
+    }
+    // TODO else give usage
+})
