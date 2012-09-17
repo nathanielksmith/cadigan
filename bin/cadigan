@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var cli = require('../lib/cli').cli
+var cli = require('../lib/cli')
 
 var command = process.argv[2]
 var args = process.argv.slice(3)
