@@ -56,11 +56,31 @@ exports.test_new = {
         cli.new(['title'], function(err) { e = err })
         test.ok(!e, 'no error')
         var post = cadigan.new.args[0][0]
-        // TODO test post
-        console.log(cadigan.new.args)
+        test.deepEqual(post.tags, [], 'no tags')
+        test.equal(post.title, 'title', 'see title')
         test.done()
     },
     test_weird_tags: function(test) {
+        var e
+        cli.__set__('readline', {
+            createInterface: function() {
+                return {
+                    question: function(p, cb) {
+                        cb('gaslark:humbug,,fiend$!bocarce,,,123934-p.   alphabet')
+                    },
+                    close: m.noop
+                }
+            }
+        })
+        cli.new(['title'], function(err) {e=err})
+        test.ok(!e, 'no error')
+        var post = cadigan.new.args[0][0]
+        test.deepEqual(post.tags, [
+            'gaslark:humbug',
+            'fiend$!bocarce',
+            '123943-p.    alphabet'
+        ], 'see proper tags')
+        test.equal(post.title, 'title', 'see title')
         test.done()
     },
     test_ds_fail: function(test) {
