@@ -198,7 +198,9 @@ exports.test_publish = {
         cb()
     },
     test_bad_args: function(test) {
-        test.done()
+        cli.publish([], function(err) {
+            test.done()
+        })
     },
     test_success: function(test) {
         test.done()
