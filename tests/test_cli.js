@@ -195,14 +195,19 @@ exports.test_search_and_list = {
 
 exports.test_publish = {
     setUp: function(cb) {
+        cadigan.publish = m.create_func({func:function(id, cb) { cb(null) }})
         cb()
     },
     test_bad_args: function(test) {
         cli.publish([], function(err) {
+            test.ok(err, 'see error')
             test.done()
         })
     },
     test_success: function(test) {
+        cli.publish([123], function(err) {
+            test.ok(!err, 'no error')
+        })
         test.done()
     }
 }
