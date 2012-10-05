@@ -57,6 +57,7 @@ exports.test_new = {
         cli.new(['good title'], function(err) { e = err })
         test.ok(!e, 'no error')
         var post = cadigan.new.args[0][0]
+        test.equal(post.published, false, 'unpublished by default')
         test.deepEqual(post.tags, [], 'no tags')
         test.equal(post.title, 'good title', 'see title')
         test.done()
@@ -82,12 +83,6 @@ exports.test_new = {
             '123934-p.   alphabet'
         ], 'see proper tags')
         test.equal(post.title, 'title', 'see title')
-        test.done()
-    },
-    test_ds_fail: function(test) {
-        test.done()
-    },
-    test_success: function(test) {
         test.done()
     }
 }
