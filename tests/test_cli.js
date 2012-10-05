@@ -24,6 +24,7 @@ cadigan.new = m.create_func()
 exports.test_new = {
     setUp: function(cb) {
         cli.__set__('cadigan', cadigan)
+        cadigan.new.reset()
         cli.editor = function(filename, cb) { cb(0) }
 
         cb()
@@ -53,11 +54,11 @@ exports.test_new = {
                 }
             },
         })
-        cli.new(['title'], function(err) { e = err })
+        cli.new(['good title'], function(err) { e = err })
         test.ok(!e, 'no error')
         var post = cadigan.new.args[0][0]
         test.deepEqual(post.tags, [], 'no tags')
-        test.equal(post.title, 'title', 'see title')
+        test.equal(post.title, 'good title', 'see title')
         test.done()
     },
     test_weird_tags: function(test) {
@@ -78,7 +79,7 @@ exports.test_new = {
         test.deepEqual(post.tags, [
             'gaslark:humbug',
             'fiend$!bocarce',
-            '123943-p.    alphabet'
+            '123934-p.   alphabet'
         ], 'see proper tags')
         test.equal(post.title, 'title', 'see title')
         test.done()
