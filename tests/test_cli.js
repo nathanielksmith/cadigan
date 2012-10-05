@@ -212,5 +212,21 @@ exports.test_publish = {
     }
 }
 
-var test_delete = {
+exports.test_delete = {
+    setUp: function(cb) {
+        cadigan.delete = m.create_func({func:function(id,cb){cb(null)}})
+        cb()
+    },
+    test_bad_args: function(test) {
+        cli.delete([], function(err) {
+            test.ok(err, 'see error')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        cli.delete([123], function(err) {
+            test.ok(!err, 'do not see error')
+            test.done()
+        })
+    }
 }
