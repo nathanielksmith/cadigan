@@ -193,7 +193,16 @@ exports.test_search_and_list = {
     }
 }
 
-var test_publish = {
+exports.test_publish = {
+    setUp: function(cb) {
+        cb()
+    },
+    test_bad_args: function(test) {
+        test.done()
+    },
+    test_success: function(test) {
+        test.done()
+    }
 }
 
 var test_delete = {
