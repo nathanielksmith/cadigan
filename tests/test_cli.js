@@ -7,8 +7,10 @@ var cli = rewire('../lib/cli')
 cli.__set__('fs', {
     readFile: function(filename, cb) {
         cb(null, 'thundering clap')
-    }
+    },
+    writeFileSync: m.noop
 })
+
 
 cli.__set__('readline', {
     createInterface: function() {
@@ -18,17 +20,31 @@ cli.__set__('readline', {
     }
 })
 
+
 var cadigan = require('../lib/cadigan')
 cadigan.new = m.create_func()
+cadigan.get = m.create_func({func:function(id, cb) {
+    cb(null, {
+        _id: id,
+        title: 'great title',
+        tags: ['hi', 'there'],
+        content: ['awesome post'],
+        published: true
+    })
+}})
+cadigan.update = m.create_func({func:function(id, doc, cb) { cb(null) }})
+
+var common_setup = function(cb) {
+    cli.__set__('cadigan', cadigan)
+    cadigan.new.reset()
+    cadigan.update.reset()
+    cli.editor = function(filename, cb) { cb(0) }
+
+    cb()
+}
 
 exports.test_new = {
-    setUp: function(cb) {
-        cli.__set__('cadigan', cadigan)
-        cadigan.new.reset()
-        cli.editor = function(filename, cb) { cb(0) }
-
-        cb()
-    },
+    setUp: common_setup,
     test_no_args: function(test) {
         var e
         cli.new([], function(err) {
@@ -87,10 +103,94 @@ exports.test_new = {
     }
 }
 
-var test_edit = {
+exports.test_edit = {
+    setUp: common_setup,
+    test_bad_args: function(test) {
+        var e
+        cli.edit([], function(err) {e=err})
+        test.ok(e, 'saw error')
+        test.done()
+    },
+    test_success_overwrite: function(test) {
+        var e
+        cli.__set__('readline', {
+            createInterface: function() {
+                return {
+                    question: function(p, cb) {
+                        if (p.match(/title/)) {
+                            cb('NEW TITLE!')
+                        }
+                        else { cb('some,tags') }
+                    },
+                    close: m.noop
+                }
+            }
+        })
+        cli.edit([123], function(err) {e=err})
+        var post = cadigan.update.args[0][1]
+        test.equal(post.content, 'thundering clap', 'new content')
+        test.equal(post.title, 'NEW TITLE!', 'reset title')
+        test.deepEqual(post.tags, ['some', 'tags'], 'see new tags')
+        test.ok(post.published, 'still published')
+
+        test.done()
+    },
+    test_success_only_content: function(test) {
+        var e
+        cli.__set__('readline', {
+            createInterface: function() {
+                return {
+                    question: function(p, cb) { cb('') },
+                    close: m.noop
+                }
+            }
+        })
+        cli.edit([123], function(err) {e=err})
+        var post = cadigan.update.args[0][1]
+        test.equal(post.title, 'great title', 'title unchanged')
+        test.deepEqual(post.tags, ['hi', 'there'], 'tags unchanged')
+        test.ok(post.published, 'still published')
+        test.equal(post.content, 'thundering clap', 'content changed')
+
+        test.done()
+    }
 }
 
-var test_search_and_list = {
+exports.test_search_and_list = {
+    setUp: function(cb) {
+        this.mock_cliff = {
+            putObjectRows: m.create_func()
+        }
+        cli.__set__('cliff', this.mock_cliff)
+        cli.__set__('cadigan', cadigan)
+        cb()
+    },
+    test_bad_args: function(test) {
+        var e
+        cli.search([], function(err) {e=err})
+        test.ok(e, 'saw error')
+        test.done()
+    },
+    test_no_results: function(test) {
+        cadigan.search = m.create_func({func:function(keyword, cb) { cb(null, []) }})
+        cli.search(['hello'], function(err) {
+            test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
+            var results = this.mock_cliff.putObjectRows.args[0][1]
+            test.deepEqual(results, [], 'no results passed to cliff')
+
+            test.done()
+        }.bind(this))
+    },
+    test_results: function(test) {
+        cadigan.search = m.create_func({func:function(keyword, cb) { cb(null, [1,2,3]) }})
+        cli.search(['hello'], function(err) {
+            test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
+            var results = this.mock_cliff.putObjectRows.args[0][1]
+            test.deepEqual(results, [1,2,3], 'results passed to cliff')
+
+            test.done()
+        }.bind(this))
+    }
 }
 
 var test_publish = {
