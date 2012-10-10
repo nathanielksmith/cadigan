@@ -165,13 +165,13 @@ exports.test_search_and_list = {
         cli.__set__('cadigan', cadigan)
         cb()
     },
-    test_bad_args: function(test) {
+    test_search_bad_args: function(test) {
         var e
         cli.search([], function(err) {e=err})
         test.ok(e, 'saw error')
         test.done()
     },
-    test_no_results: function(test) {
+    test_search_no_results: function(test) {
         cadigan.search = m.create_func({func:function(keyword, cb) { cb(null, []) }})
         cli.search(['hello'], function(err) {
             test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
@@ -181,7 +181,37 @@ exports.test_search_and_list = {
             test.done()
         }.bind(this))
     },
-    test_results: function(test) {
+    test_search_results: function(test) {
+        cadigan.search = m.create_func({func:function(keyword, cb) { cb(null, [1,2,3]) }})
+        cli.search(['hello'], function(err) {
+            test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
+            var results = this.mock_cliff.putObjectRows.args[0][1]
+            test.deepEqual(results, [1,2,3], 'results passed to cliff')
+
+            test.done()
+        }.bind(this))
+    },
+    test_list_no_results: function(test) {
+        cadigan.list = m.create_func({func:function(cb) { cb(null, []) }})
+        cli.list([], function(err) {
+            test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
+            var results = this.mock_cliff.putObjectRows.args[0][1]
+            test.deepEqual(results, [], 'no results passed to cliff')
+
+            test.done()
+        }.bind(this))
+    },
+    test_list_results: function(test) {
+        cadigan.list = m.create_func({func:function(cb) { cb(null, [1,2,3]) }})
+        cli.list([], function(err) {
+            test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
+            var results = this.mock_cliff.putObjectRows.args[0][1]
+            test.deepEqual(results, [1,2,3], 'results passed to cliff')
+
+            test.done()
+        }.bind(this))
+    },
+    test_search_results: function(test) {
         cadigan.search = m.create_func({func:function(keyword, cb) { cb(null, [1,2,3]) }})
         cli.search(['hello'], function(err) {
             test.equal(this.mock_cliff.putObjectRows.calls, 1, 'called putobjectrows')
@@ -226,6 +256,7 @@ exports.test_delete = {
     test_success: function(test) {
         cli.delete([123], function(err) {
             test.ok(!err, 'do not see error')
+            test.equal(cadigan.delete.calls, 1, 'called delete once')
             test.done()
         })
     }
