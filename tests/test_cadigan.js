@@ -150,4 +150,40 @@ exports.test_new = {
 }
 
 exports.test_get = {
+    setUp: function(cb) {
+        this.mock_store = { get: m.create_func() }
+        cadigan.store = this.mock_store
+        cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.get.reset()
+        cb()
+    },
+    test_ds_error: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb('error')
+        }
+        cadigan.get(123, function(err, doc) {
+            test.equal(err, 'error', 'see error')
+            test.ok(!doc, 'no doc')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb(null, {hi:'there'})
+        }
+        cadigan.get(123, function(err, doc) {
+            test.ok(!err, 'no error')
+            test.equal(doc.hi, 'there', 'got doc')
+            test.done()
+        })
+    }
 }
+
+test_publish = {}
+test_unpublish = {}
+test_update = {}
+test_delete = {}
+test_search = {}
+test_list = {}
