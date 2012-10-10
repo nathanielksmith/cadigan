@@ -8,6 +8,9 @@ cadigan =
     init: (cb) ->
         this.cadigan_path = "#{process.env['HOME']}/.cadigan"
         this.docstore_path =  "#{this.cadigan_path}/docstore"
+
+        console.log fs.existsSync.calls
+
         unless fs.existsSync(this.cadigan_path)
             fs.mkdirSync(this.cadigan_path)
         unless fs.existsSync(this.docstore_path)
@@ -78,4 +81,4 @@ cadigan =
         doc._id != 'auth' and doc._id != 'meta'
     , cb)
 
-exports.cadigan = cadigan
+module.exports = cadigan

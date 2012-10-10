@@ -1,8 +1,6 @@
 var m = require('akeley')
 var rewire = require('rewire')
 
-var cli = require('../lib/cli')
-
 var cli = rewire('../lib/cli')
 cli.__set__('fs', {
     readFile: function(filename, cb) {
@@ -21,7 +19,8 @@ cli.__set__('readline', {
 })
 
 
-var cadigan = require('../lib/cadigan')
+// set up cadigan mock
+var cadigan = {}
 cadigan.new = m.create_func()
 cadigan.get = m.create_func({func:function(id, cb) {
     cb(null, {
