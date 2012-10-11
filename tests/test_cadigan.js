@@ -1,4 +1,5 @@
 var m = require('akeley')
+var _ = require('underscore')
 var rewire = require('rewire')
 
 var cadigan = rewire('../lib/cadigan')
@@ -74,16 +75,29 @@ exports.test_now = {
     }
 }
 
+var mock_store = {
+    init: function() {
+        this =_.extend(this, {
+            get: m.create_func(),
+            save: m.create_func(),
+            remove: m.create_func(),
+            scan: m.create_func()
+        })
+        return this
+    },
+    reset: function() {
+        console.log(this)
+        ['get', 'save', 'remove', 'scan'].forEach(function(x) { this[x].reset() })
+    }
+}
+
 exports.test_meta = {
     setUp: function(cb) {
-        this.mock_store = {
-            get: m.create_func()
-        }
-        cadigan.store = this.mock_store
+        cadigan.store = Object.create(mock_store.init())
         cb()
     },
     tearDown: function(cb) {
-        this.mock_store.get.reset()
+        cadigan.store.reset()
         cb()
     },
     test_error: function(test) {
@@ -113,12 +127,11 @@ exports.test_new = {
         cadigan.now = m.create_func({
             return_value: 10
         })
-        this.mock_store = { save: m.create_func() }
-        cadigan.store = this.mock_store
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
         cb()
     },
     tearDown: function(cb) {
-        this.mock_store.save.reset()
+        this.mock_store.reset()
         cb()
     },
     test_success: function(test) {
@@ -151,12 +164,11 @@ exports.test_new = {
 
 exports.test_get = {
     setUp: function(cb) {
-        this.mock_store = { get: m.create_func() }
-        cadigan.store = this.mock_store
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
         cb()
     },
     tearDown: function(cb) {
-        this.mock_store.get.reset()
+        this.mock_store.reset()
         cb()
     },
     test_ds_error: function(test) {
@@ -183,16 +195,11 @@ exports.test_get = {
 
 exports.test_publish = {
     setUp: function(cb) {
-        this.mock_store = {
-            get: m.create_func(),
-            save: m.create_func()
-        }
-        cadigan.store = this.mock_store
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
         cb()
     },
     tearDown: function(cb) {
-        this.mock_store.get.reset()
-        this.mock_store.save.reset()
+        this.mock_store.reset()
         cb()
     },
     test_bad_id: function(test) {
@@ -235,16 +242,11 @@ exports.test_publish = {
 
 exports.test_unpublish = {
     setUp: function(cb) {
-        this.mock_store = {
-            get: m.create_func(),
-            save: m.create_func()
-        }
-        cadigan.store = this.mock_store
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
         cb()
     },
     tearDown: function(cb) {
-        this.mock_store.get.reset()
-        this.mock_store.save.reset()
+        this.mock_store.reset()
         cb()
     },
     test_bad_id: function(test) {
@@ -285,7 +287,89 @@ exports.test_unpublish = {
     }
 }
 
-test_update = {}
-test_delete = {}
-test_search = {}
+exports.test_update = {
+    setUp: function(cb) {
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.reset()
+        cb()
+    },
+    test_bad_id: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb('error')
+        }
+        cadigan.update(123, {title:'hi'}, function(err, post) {
+            test.equal(err, 'error', 'see error')
+            test.ok(!post, 'no post passed')
+            test.done()
+        })
+    },
+    test_failed_save: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb(null, {title:'hola', _id:123})
+        }
+        this.mock_store.save.func = function(post, cb) {
+            cb('error saving')
+        }
+        cadigan.update(123, {title:'hi'}, function(err, doc) {
+            test.equal(err, 'error saving')
+            test.ok(!doc, 'no doc')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        var post = {title:'hi'}
+        this.mock_store.get.func = function(id, cb) {
+            post._id = 123
+            cb(null, post)
+        }
+        this.mock_store.save.func = function(id, cb) {
+            cb(null, post)
+        }
+        cadigan.update(123, {title:'hola', tags:['hi', 'there']}, function(err, post) {
+            test.ok(!err, 'no error')
+            test.equal(post.title, 'hola', 'new title')
+            test.deepEqual(post.tags, ['hi', 'there'], 'new tags')
+            test.done()
+        })
+    }
+}
+
+exports.test_delete = {
+    setUp: function(cb) {
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.reset()
+        cb()
+    },
+    test_bad_id: function(test) {
+        this.mock_store.remove.func = function(id, cb) {
+            cb('error')
+        }
+        cadigan.delete(123, function(err) {
+            test.equal(err, 'error', 'see error')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        this.mock_store.remove.func = function(id, cb) {
+            cb(null)
+        }
+        cadigan.delete(123, function(err) {
+            test.ok(!err, 'no error')
+            test.done()
+        })
+    }
+}
+
+exports.test_search = {
+    setUp: function() {
+        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cb()
+    }
+}
 test_list = {}
