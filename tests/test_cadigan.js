@@ -365,6 +365,36 @@ exports.test_delete = {
 exports.test_search = {
     setUp: function(cb) {
         this.mock_store = cadigan.store = new MockStore()
+        this.docs = [{
+            _id: 'auth'
+        }, {
+            _id: 'meta'
+        }, {
+            _id: 123,
+            title: 'bog wraith',
+            content: 'kittens',
+            tags: ['hi', 'there'],
+        }, {
+            _id: 456,
+            title: 'kittens',
+            content: 'bog wraith',
+            tags: ['how', 'are']
+        }, {
+            _id: 789,
+            title: 'kittens',
+            content: 'manatee',
+            tags: ['bog', 'yeah']
+        }, {
+            _id: 321,
+            title:'fury',
+            content: 'guthma',
+            tags: ['none', 'ever']
+        }, {
+            _id: 321,
+            title:'fury',
+            content: 'guthma',
+            tags: []
+        }]
         cb()
     },
     tearDown: function(cb) {
@@ -372,7 +402,41 @@ exports.test_search = {
         cb()
     },
     test_no_keyword: function(test) {
-        test.done()
+        cadigan.search('', function(err, posts) {
+            test.ok(err, 'see an error')
+            test.ok(!posts, 'no posts')
+            test.done()
+        })
+    },
+    test_ds_error: function(test) {
+        this.mock_store.scan.func = function(pred, cb) {
+            cb('error scanning')
+        }
+        cadigan.search('bog', function(err, posts) {
+            test.equal(err, 'error scanning', 'see error')
+            test.ok(!posts, 'see no posts')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        var docs = this.docs
+        this.mock_store.scan.func = function(filter, cb) {
+            cb(null, docs.filter(filter))
+        }
+        cadigan.search('bog', function(err, results) {
+            test.ok(!err, 'no error')
+            test.equal(results.length, 3, 'got 3 docs')
+            test.equal(results.filter(function(r) {
+                return r.title === 'bog wraith'
+            }).length, 1, 'see title match')
+            test.equal(results.filter(function(r) {
+                return r.content === 'bog wraith'
+            }).length, 1, 'see content match')
+            test.equal(results.filter(function(r) {
+                return r.content === 'manatee'
+            }).length, 1, 'see content match')
+            test.done()
+        })
     }
 }
 test_list = {}
