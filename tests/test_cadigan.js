@@ -362,39 +362,40 @@ exports.test_delete = {
     }
 }
 
+var some_docs = [{
+    _id: 'auth'
+}, {
+    _id: 'meta'
+}, {
+    _id: 123,
+    title: 'bog wraith',
+    content: 'kittens',
+    tags: ['hi', 'there'],
+}, {
+    _id: 456,
+    title: 'kittens',
+    content: 'bog wraith',
+    tags: ['how', 'are']
+}, {
+    _id: 789,
+    title: 'kittens',
+    content: 'manatee',
+    tags: ['bog', 'yeah']
+}, {
+    _id: 321,
+    title:'fury',
+    content: 'guthma',
+    tags: ['none', 'ever']
+}, {
+    _id: 321,
+    title:'fury',
+    content: 'guthma',
+    tags: []
+}]
+
 exports.test_search = {
     setUp: function(cb) {
         this.mock_store = cadigan.store = new MockStore()
-        this.docs = [{
-            _id: 'auth'
-        }, {
-            _id: 'meta'
-        }, {
-            _id: 123,
-            title: 'bog wraith',
-            content: 'kittens',
-            tags: ['hi', 'there'],
-        }, {
-            _id: 456,
-            title: 'kittens',
-            content: 'bog wraith',
-            tags: ['how', 'are']
-        }, {
-            _id: 789,
-            title: 'kittens',
-            content: 'manatee',
-            tags: ['bog', 'yeah']
-        }, {
-            _id: 321,
-            title:'fury',
-            content: 'guthma',
-            tags: ['none', 'ever']
-        }, {
-            _id: 321,
-            title:'fury',
-            content: 'guthma',
-            tags: []
-        }]
         cb()
     },
     tearDown: function(cb) {
@@ -419,7 +420,7 @@ exports.test_search = {
         })
     },
     test_success: function(test) {
-        var docs = this.docs
+        var docs = some_docs
         this.mock_store.scan.func = function(filter, cb) {
             cb(null, docs.filter(filter))
         }
@@ -439,4 +440,33 @@ exports.test_search = {
         })
     }
 }
-test_list = {}
+exports.test_list = {
+    setUp: function(cb) {
+        this.mock_store = cadigan.store = new MockStore()
+        cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.reset()
+        cb()
+    },
+    test_ds_fail: function(test) {
+        this.mock_store.scan.func = function(f, cb) {
+            cb('error scanning')
+        }
+        cadigan.list(function(err, docs) {
+            test.equal(err, 'error scanning', 'see error')
+            test.ok(!docs, 'no docs')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        this.mock_store.scan.func = function(filter, cb) {
+            cb(null, some_docs.filter(filter))
+        }
+        cadigan.list(function(err, docs) {
+            test.ok(!err, 'no error')
+            test.equal(docs.length, some_docs.length-2, 'see all but auth and meta')
+            test.done()
+        })
+    }
+}
