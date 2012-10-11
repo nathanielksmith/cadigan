@@ -75,25 +75,21 @@ exports.test_now = {
     }
 }
 
-var mock_store = {
-    init: function() {
-        this =_.extend(this, {
-            get: m.create_func(),
-            save: m.create_func(),
-            remove: m.create_func(),
-            scan: m.create_func()
-        })
-        return this
-    },
-    reset: function() {
-        console.log(this)
-        ['get', 'save', 'remove', 'scan'].forEach(function(x) { this[x].reset() })
-    }
+var MockStore = function() {
+    _.extend(this, {
+        get: m.create_func(),
+        save: m.create_func(),
+        remove: m.create_func(),
+        scan: m.create_func(),
+        reset: function() {
+            ['get', 'save', 'remove', 'scan'].forEach(function(x) { this[x].reset() }.bind(this))
+        }
+    })
 }
 
 exports.test_meta = {
     setUp: function(cb) {
-        cadigan.store = Object.create(mock_store.init())
+        this.mock_store = cadigan.store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -127,7 +123,7 @@ exports.test_new = {
         cadigan.now = m.create_func({
             return_value: 10
         })
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cadigan.store = this.mock_store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -164,7 +160,7 @@ exports.test_new = {
 
 exports.test_get = {
     setUp: function(cb) {
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cadigan.store = this.mock_store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -195,7 +191,7 @@ exports.test_get = {
 
 exports.test_publish = {
     setUp: function(cb) {
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cadigan.store = this.mock_store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -242,7 +238,7 @@ exports.test_publish = {
 
 exports.test_unpublish = {
     setUp: function(cb) {
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cadigan.store = this.mock_store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -289,7 +285,7 @@ exports.test_unpublish = {
 
 exports.test_update = {
     setUp: function(cb) {
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cadigan.store = this.mock_store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -339,7 +335,7 @@ exports.test_update = {
 
 exports.test_delete = {
     setUp: function(cb) {
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+        cadigan.store = this.mock_store = new MockStore()
         cb()
     },
     tearDown: function(cb) {
@@ -367,9 +363,16 @@ exports.test_delete = {
 }
 
 exports.test_search = {
-    setUp: function() {
-        cadigan.store = this.mock_store = Object.create(mock_store.init())
+    setUp: function(cb) {
+        this.mock_store = cadigan.store = new MockStore()
         cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.reset()
+        cb()
+    },
+    test_no_keyword: function(test) {
+        test.done()
     }
 }
 test_list = {}
