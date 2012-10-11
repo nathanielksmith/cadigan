@@ -181,8 +181,110 @@ exports.test_get = {
     }
 }
 
-test_publish = {}
-test_unpublish = {}
+exports.test_publish = {
+    setUp: function(cb) {
+        this.mock_store = {
+            get: m.create_func(),
+            save: m.create_func()
+        }
+        cadigan.store = this.mock_store
+        cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.get.reset()
+        this.mock_store.save.reset()
+        cb()
+    },
+    test_bad_id: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb('error')
+        }
+        cadigan.publish(123, function(err, doc) {
+            test.equal(err, 'error', 'see error')
+            test.ok(!doc, 'no doc')
+            test.done()
+        })
+    },
+    test_failed_save: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb(null, {published: false, _id:123})
+        }
+        this.mock_store.save.func = function(post, cb) {
+            cb('error saving')
+        }
+        cadigan.publish(123, function(err, doc) {
+            test.equal(err, 'error saving')
+            test.ok(!doc, 'no doc')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb(null, {})
+        }
+        this.mock_store.save.func = function(doc, cb) {
+            cb(null, doc)
+        }
+        cadigan.publish(123, function(err, post) {
+            test.ok(!err, 'no error')
+            test.ok(post.published, 'published set')
+            test.done()
+        })
+    }
+}
+
+exports.test_unpublish = {
+    setUp: function(cb) {
+        this.mock_store = {
+            get: m.create_func(),
+            save: m.create_func()
+        }
+        cadigan.store = this.mock_store
+        cb()
+    },
+    tearDown: function(cb) {
+        this.mock_store.get.reset()
+        this.mock_store.save.reset()
+        cb()
+    },
+    test_bad_id: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb('error')
+        }
+        cadigan.unpublish(123, function(err, doc) {
+            test.equal(err, 'error', 'see error')
+            test.ok(!doc, 'no doc')
+            test.done()
+        })
+    },
+    test_failed_save: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb(null, {published: false, _id:123})
+        }
+        this.mock_store.save.func = function(post, cb) {
+            cb('error saving')
+        }
+        cadigan.unpublish(123, function(err, doc) {
+            test.equal(err, 'error saving')
+            test.ok(!doc, 'no doc')
+            test.done()
+        })
+    },
+    test_success: function(test) {
+        this.mock_store.get.func = function(id, cb) {
+            cb(null, {})
+        }
+        this.mock_store.save.func = function(doc, cb) {
+            cb(null, doc)
+        }
+        cadigan.unpublish(123, function(err, post) {
+            test.ok(!err, 'no error')
+            test.equal(post.published, false, 'published unset')
+            test.done()
+        })
+    }
+}
+
 test_update = {}
 test_delete = {}
 test_search = {}
