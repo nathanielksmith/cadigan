@@ -4,7 +4,7 @@ hash = require 'node_hash'
 consolidate = require 'consolidate'
 wmd = require 'wmd'
 
-cadigan = (require '../lib/cadigan').cadigan
+cadigan = require '../lib/cadigan'
 
 app = express()
 app.use express.bodyParser()
