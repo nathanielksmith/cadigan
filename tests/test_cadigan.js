@@ -96,23 +96,44 @@ exports.test_meta = {
         cadigan.store.reset()
         cb()
     },
-    test_error: function(test) {
+    test_get_error: function(test) {
         this.mock_store.get.func = function(key, cb) {
             cb('error')
         }
-        cadigan.meta(function(err, meta) {
+        cadigan.get_meta(function(err, meta) {
             test.ok(!meta, 'got no meta')
             test.equal(err, 'error', 'see error')
             test.done()
         })
     },
-    test_success: function(test) {
+    test_get_success: function(test) {
         this.mock_store.get.func = function(key, cb) {
             cb(null, {hi:'there'})
         }
-        cadigan.meta(function(err, meta) {
+        cadigan.get_meta(function(err, meta) {
             test.ok(!err, 'see no error')
             test.equal(meta.hi, 'there', 'got meta')
+            test.done()
+        })
+    },
+    test_set_error: function(test) {
+        this.mock_store.save.func = function(key, data, cb) {
+            cb('error setting')
+        }
+        cadigan.set_meta({hello:'thar'}, function(err, meta) {
+            test.equal(err, 'error setting', 'see error')
+            test.ok(!meta, 'no meta passed')
+            test.done()
+        })
+    },
+    test_set_success: function(test) {
+        this.mock_store.save.func = function(key, data, cb) {
+            data._id = key
+            cb(null, data)
+        }
+        cadigan.set_meta({hello:'there'}, function(err, meta) {
+            test.ok(!err, 'no error')
+            test.equal(meta.hello, 'there', 'see meta')
             test.done()
         })
     }
