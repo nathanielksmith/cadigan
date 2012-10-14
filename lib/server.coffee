@@ -1,5 +1,3 @@
-readline = require 'readline'
-
 async = require 'async'
 express = require 'express'
 hash = require 'node_hash'
