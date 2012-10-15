@@ -22,7 +22,7 @@ cli.__set__('readline', {
 // set up cadigan mock
 var cadigan = {}
 cadigan.new = m.create_func()
-cadigan.get = m.create_func({func:function(id, cb) {
+cadigan.get_post = m.create_func({func:function(id, cb) {
     cb(null, {
         _id: id,
         title: 'great title',

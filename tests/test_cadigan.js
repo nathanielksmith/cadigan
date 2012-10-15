@@ -179,7 +179,7 @@ exports.test_new = {
     }
 }
 
-exports.test_get = {
+exports.test_get_post = {
     setUp: function(cb) {
         cadigan.store = this.mock_store = new MockStore()
         cb()
@@ -192,7 +192,7 @@ exports.test_get = {
         this.mock_store.get.func = function(id, cb) {
             cb('error')
         }
-        cadigan.get(123, function(err, doc) {
+        cadigan.get_post(123, function(err, doc) {
             test.equal(err, 'error', 'see error')
             test.ok(!doc, 'no doc')
             test.done()
@@ -202,7 +202,7 @@ exports.test_get = {
         this.mock_store.get.func = function(id, cb) {
             cb(null, {hi:'there'})
         }
-        cadigan.get(123, function(err, doc) {
+        cadigan.get_post(123, function(err, doc) {
             test.ok(!err, 'no error')
             test.equal(doc.hi, 'there', 'got doc')
             test.done()
