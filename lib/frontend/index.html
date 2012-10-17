@@ -15,10 +15,8 @@
     <script src="js/models.js"></script>
 </head>
 <body>
-    <div id="public" style="display:none" class="container-fluid">
-        <div class="row-fluid">
-            <h1>{{site_name}}</h1>
-        </div> <!-- /.row-fluid -->
+    <div id="public" class="container-fluid">
+        <div id="header" class="row-fluid"></div> <!-- /.row-fluid -->
         <div class="row-fluid">
             <div class="span2">
                 SIDEBAR
@@ -29,21 +27,21 @@
                 </div> <!-- /.span12 -->
             </div> <!-- /.span9 -->
         </div> <!-- /.row-fluid -->
-        <hr>
-        <footer>(c) {{site_name}} </footer>
     </div> <!-- /.container-fluid -->
+    <hr>
+    <footer></footer>
 
     <!-- templates -->
-    <div class="template" id="posts_tmpl">
-        {{# posts }}
-        <div class="post row-fluid">
-            <div class="span12">
-                <h3>{{title}}</h3>
-                <p>{{content}}</h2>
-            </div> <!-- /.span12 -->
-        </div>
-        {{/posts}}
-    </div>
+    <script type="template/hogan" id="header_tmpl" class="template">
+        <h1>{{site_name}}</h1>
+    </script>
+    <script type="template/hogan" id="post_tmpl" class="template">
+        <h3>{{title}}</h3>
+        <p>{{content}}</p>
+    </script>
+    <script type="template/hogan" id="posts_tmpl" class="template">
+        {{#posts}}{{> post}}{{/posts}}
+    </script>
 
     <!-- alerts -->
     <div class="alert alert-success" id="deletedalert" style="display:none" >
