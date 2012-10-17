@@ -5,11 +5,13 @@
 
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <link rel="stylesheet" href="css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
     <link rel="alternate" type="application/rss+xml" href="/feed" />
 
     <script src="js/underscore.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/backbone.js"></script>
+    <script src="js/hogan.js"></script>
     <script src="js/models.js"></script>
 </head>
 <body>
@@ -18,6 +20,16 @@
     </div> <!-- /.container-fluid -->
     <hr>
     <footer></footer>
+
+    <!-- templates -->
+    <div class="template" id="posts_tmpl">
+        {{# posts }}
+            <div class="post">
+                <h2>{{title}}</h2>
+                <p>{{content}}</h2>
+            </div>
+        {{/posts}}
+    </div>
 
     <!-- alerts -->
     <div class="alert alert-success" id="deletedalert" style="display:none" >
