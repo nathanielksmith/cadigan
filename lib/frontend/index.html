@@ -15,19 +15,33 @@
     <script src="js/models.js"></script>
 </head>
 <body>
-    <h1><a href="#" id="title"></a></h1>
-    <div id="main" class="container-fluid">
+    <div id="public" style="display:none" class="container-fluid">
+        <div class="row-fluid">
+            <h1>{{site_name}}</h1>
+        </div> <!-- /.row-fluid -->
+        <div class="row-fluid">
+            <div class="span2">
+                SIDEBAR
+            </div> <!-- /.span3 -->
+            <div class="span10" style="border-left:1px solid black">
+                <div class="row-fluid">
+                    <div id="posts" class="span12"> </div> <!-- /.span12 -->
+                </div> <!-- /.span12 -->
+            </div> <!-- /.span9 -->
+        </div> <!-- /.row-fluid -->
+        <hr>
+        <footer>(c) {{site_name}} </footer>
     </div> <!-- /.container-fluid -->
-    <hr>
-    <footer></footer>
 
     <!-- templates -->
     <div class="template" id="posts_tmpl">
         {{# posts }}
-            <div class="post">
-                <h2>{{title}}</h2>
+        <div class="post row-fluid">
+            <div class="span12">
+                <h3>{{title}}</h3>
                 <p>{{content}}</h2>
-            </div>
+            </div> <!-- /.span12 -->
+        </div>
         {{/posts}}
     </div>
 
