@@ -16,16 +16,12 @@
 </head>
 <body>
     <div id="public" class="container-fluid">
-        <div id="header" class="row-fluid"></div> <!-- /.row-fluid -->
         <div class="row-fluid">
-            <div class="span2">
-                SIDEBAR
-            </div> <!-- /.span3 -->
-            <div class="span10" style="border-left:1px solid black">
-                <div class="row-fluid">
-                    <div id="posts" class="span12"> </div> <!-- /.span12 -->
-                </div> <!-- /.span12 -->
-            </div> <!-- /.span9 -->
+            <div id="header" class="span6"></div> <!-- /.span6 -->
+            <div id="search" class="span6">search</div> <!-- /.span6 -->
+        </div> <!-- /.row-fluid -->
+        <div class="row-fluid">
+            <div id="posts" class="span12"> </div> <!-- /.span12 -->
         </div> <!-- /.row-fluid -->
     </div> <!-- /.container-fluid -->
     <hr>
@@ -33,11 +29,17 @@
 
     <!-- templates -->
     <script type="template/hogan" id="header_tmpl" class="template">
-        <h1>{{site_name}}</h1>
+        <h1><a href="#">{{site_name}}</a></h1>
     </script>
     <script type="template/hogan" id="post_tmpl" class="template">
-        <h3>{{title}}</h3>
-        <p>{{content}}</p>
+        <div class="row-fluid">
+            <div class="span12">
+                <h3><a href="#/posts/{{_id}}">{{ title }}</a></h3>
+                <p>{{{content}}}</p>
+                <sub>tags: {{#tags}}<a href="#/tag/{{.}}">{{.}}</a> {{/tags}}</sub><br />
+                <sub>published at {{created}}</sub>
+            </div> <!-- /.span9 -->
+        </div> <!-- /.row-fluid -->
     </script>
     <script type="template/hogan" id="posts_tmpl" class="template">
         {{#posts}}{{> post}}{{/posts}}
