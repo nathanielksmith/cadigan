@@ -15,14 +15,46 @@
     <script src="js/models.js"></script>
 </head>
 <body>
-    <div id="public" class="container-fluid">
+    <div class="container-fluid">
         <div class="row-fluid">
             <div id="header" class="span6"></div> <!-- /.span6 -->
             <div id="search" class="span6">search</div> <!-- /.span6 -->
         </div> <!-- /.row-fluid -->
-        <div class="row-fluid">
-            <div id="posts" class="span12"> </div> <!-- /.span12 -->
-        </div> <!-- /.row-fluid -->
+        <div id="public">
+            <div class="row-fluid">
+                <div id="posts" class="span12"> </div> <!-- /.span12 -->
+            </div> <!-- /.row-fluid -->
+        </div> <!-- /#public -->
+        <div id="admin" style="display:none">
+            <div class="row-fluid">
+                <div id="sidebar" class="span3">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <ul class="nav nav-list">
+                                <li class="nav-header">write words</li>
+                                <li>
+                                    <a href="#/admin" data-target="dashboard">Dashboard</a>
+                                </li>
+                                <li>
+                                    <a href="#/admin/new" data-target="new">New</a>
+                                </li>
+                                <li>
+                                    <a href="#/admin/posts" data-target="posts">Posts</a>
+                                </li>
+                            </ul>
+                        </div> <!-- /.span12 -->
+                    </div> <!-- /.row-fluid -->
+                    <hr />
+                    <div class="row-fluid">
+                        <div class="span12 alerts">
+                        </div> <!-- /.span12 -->
+                    </div> <!-- /.row-fluid -->
+                </div> <!-- /#sidebar.span3 -->
+                <div class="span9" id="workspace"> 
+                    <div id="admin_posts"></div>
+                </div> <!-- /#workspace.span9 -->
+            </div> <!-- /.row-fluid -->
+        </div> <!-- /#admin.container-fluid -->
     </div> <!-- /.container-fluid -->
     <hr>
     <footer></footer>
@@ -43,6 +75,72 @@
     </script>
     <script type="template/hogan" id="posts_tmpl" class="template">
         {{#posts}}{{> post}}{{/posts}}
+    </script>
+    <script type="template/hogan" id="admin_posts_tmpl" class="template">
+        <h2>posts</h2>
+        <div class="row-fluid">
+            <div class="input-prepend">
+                <span class="add-on"><span class="icon-search"></span></span><input type="search" name="filter" />
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th>id</th>
+                        <th>title</th>
+                        <th>published</th>
+                        <th>updated</th>
+                        <th>tags</th>
+                    </tr>
+                    {{#posts}}
+                    <tr class="post" data-post_id="{{_id}}">
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="icon-cog"></span>
+                                    <span class="caret"></span>
+                                </a> <!-- /.btn.dropdown-toggle -->
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#/admin/edit/{{_id}}" ><span class="icon-pencil"></span> edit</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown">
+                                            <span class="icon-eye-close"></span>
+                                            move to drafts
+                                        </a>
+                                        <form class="action" id="draft" action="#/admin/unpublish" method="post">
+                                            <input type="hidden" name="post_id" value="{{_id}}" />
+                                        </form>
+                                        <a href="#" class="dropdown">
+                                            <span class="icon-eye-open"></span>
+                                            publish
+                                        </a>
+                                        <form class="action" id="publish" action="#/admin/publish" method="post">
+                                            <input type="hidden" name="post_id" value="{{_id}}" />
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown"><span class="icon-trash"></span> delete</a>
+                                        <form class="action" id="delete" action="#/admin/delete" method="post">
+                                            <input type="hidden" name="post_id" value="{{_id}}" />
+                                        </form>
+                                     </li>
+                                </ul> <!-- /.dropdown-menu -->
+                            </div> <!-- /.btn-group -->
+                        </td>
+                        <td class="id">{{_id}}</td>
+                        <td>{{title}}</td>
+                        <td>{{#published}}<span class="icon-ok"></span>{{/published}}
+                        <td>{{pretty_updated}}</td>
+                        <td>{{#tags}}{{.}}, {{/tags}}</td>
+                    </tr>
+                    {{/posts}}
+                </table>
+            </div> <!-- /.span12 -->
+        </div> <!-- /.row-fluid -->
     </script>
 
     <!-- alerts -->
