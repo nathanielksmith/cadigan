@@ -53,6 +53,7 @@
                 </div> <!-- /#sidebar.span3 -->
                 <div class="span9" id="workspace"> 
                     <div id="admin_posts"></div>
+                    <div id="admin_write"></div>
                 </div> <!-- /#workspace.span9 -->
             </div> <!-- /.row-fluid -->
         </div> <!-- /#admin.container-fluid -->
@@ -128,6 +129,23 @@
                     </tr>
                 </table>
             </div> <!-- /.span12 -->
+        </div> <!-- /.row-fluid -->
+    </script>
+    <script type="template/hogan" id="admin_write_tmpl" class="template">
+        <div id="post" class="span6">
+            <h2>write a post</h2>
+            <div class="row-fluid">
+                <div class="span12 alert" id="poststatus"></div>
+            </div>
+            <input type="text" name="title" placeholder="title" value="{{title}}"/>
+            <textarea name="posttext" id="posteditor" class="span12" style="height:250px;width:100%">{{content}}</textarea>
+            <input type="text" name="tags" placeholder="how about, some, tags" value="{{tags}}"/>
+            <p><strong>id:</strong> <span id="id">{{_id}}{{^_id}}(new){{/_id}}</span></p>
+        </div> <!-- /.row-fluid -->
+        <div class="span6">
+            <h2>preview</h2>
+            <div id="postpreview">
+            </div>
         </div> <!-- /.row-fluid -->
     </script>
 
