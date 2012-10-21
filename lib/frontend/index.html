@@ -89,17 +89,19 @@
                         <a href="#/admin/posts/edit/{{_id}}" ><span class="icon-pencil"></span> edit</a>
                     </li>
                     <li>
-                        <a href="#/admin/posts/unpublish/{{_id}}" class="dropdown">
+                        <button rel="tooltip" data-placement="right" data-title="move to drafts" class="btn unpublish">
                             <span class="icon-eye-close"></span>
-                            move to drafts
-                        </a>
-                        <a href="#/admin/posts/publish/{{_id}}" class="dropdown">
+                        </button>
+                    </li>
+                    <li>
+                        <button class="btn publish">
                             <span class="icon-eye-open"></span>
-                            publish
                         </a>
                     </li>
                     <li>
-                        <a href="#/admin/posts/delete/{{_id}}" class="dropdown"><span class="icon-trash"></span> delete</a>
+                        <button class="btn delete">
+                            <span class="icon-trash"></span>
+                        </button>
                      </li>
                 </ul> <!-- /.dropdown-menu -->
             </div> <!-- /.btn-group -->
