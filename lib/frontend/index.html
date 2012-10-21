@@ -76,6 +76,39 @@
     <script type="template/hogan" id="posts_tmpl" class="template">
         {{#posts}}{{> post}}{{/posts}}
     </script>
+    <script type="template/hogan" id="admin_post_tmpl" class="template">
+        <td>
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span class="icon-cog"></span>
+                    <span class="caret"></span>
+                </a> <!-- /.btn.dropdown-toggle -->
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#/admin/posts/edit/{{_id}}" ><span class="icon-pencil"></span> edit</a>
+                    </li>
+                    <li>
+                        <a href="#/admin/posts/unpublish/{{_id}}" class="dropdown">
+                            <span class="icon-eye-close"></span>
+                            move to drafts
+                        </a>
+                        <a href="#/admin/posts/publish/{{_id}}" class="dropdown">
+                            <span class="icon-eye-open"></span>
+                            publish
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/admin/posts/delete/{{_id}}" class="dropdown"><span class="icon-trash"></span> delete</a>
+                     </li>
+                </ul> <!-- /.dropdown-menu -->
+            </div> <!-- /.btn-group -->
+        </td>
+        <td class="id">{{_id}}</td>
+        <td>{{title}}</td>
+        <td>{{#published}}<span class="icon-ok"></span>{{/published}}
+        <td>{{pretty_updated}}</td>
+        <td>{{#tags}}{{.}}, {{/tags}}</td>
+    </script>
     <script type="template/hogan" id="admin_posts_tmpl" class="template">
         <h2>posts</h2>
         <div class="row-fluid">
@@ -94,50 +127,6 @@
                         <th>updated</th>
                         <th>tags</th>
                     </tr>
-                    {{#posts}}
-                    <tr class="post" data-post_id="{{_id}}">
-                        <td>
-                            <div class="btn-group">
-                                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <span class="icon-cog"></span>
-                                    <span class="caret"></span>
-                                </a> <!-- /.btn.dropdown-toggle -->
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#/admin/edit/{{_id}}" ><span class="icon-pencil"></span> edit</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown">
-                                            <span class="icon-eye-close"></span>
-                                            move to drafts
-                                        </a>
-                                        <form class="action" id="draft" action="#/admin/unpublish" method="post">
-                                            <input type="hidden" name="post_id" value="{{_id}}" />
-                                        </form>
-                                        <a href="#" class="dropdown">
-                                            <span class="icon-eye-open"></span>
-                                            publish
-                                        </a>
-                                        <form class="action" id="publish" action="#/admin/publish" method="post">
-                                            <input type="hidden" name="post_id" value="{{_id}}" />
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown"><span class="icon-trash"></span> delete</a>
-                                        <form class="action" id="delete" action="#/admin/delete" method="post">
-                                            <input type="hidden" name="post_id" value="{{_id}}" />
-                                        </form>
-                                     </li>
-                                </ul> <!-- /.dropdown-menu -->
-                            </div> <!-- /.btn-group -->
-                        </td>
-                        <td class="id">{{_id}}</td>
-                        <td>{{title}}</td>
-                        <td>{{#published}}<span class="icon-ok"></span>{{/published}}
-                        <td>{{pretty_updated}}</td>
-                        <td>{{#tags}}{{.}}, {{/tags}}</td>
-                    </tr>
-                    {{/posts}}
                 </table>
             </div> <!-- /.span12 -->
         </div> <!-- /.row-fluid -->
@@ -161,6 +150,8 @@
             welcome to cadigan.
     </div> <!-- /.alert.alert-success -->
 
+    <script src="js/templates.js"></script>
+    <script src="js/views.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
