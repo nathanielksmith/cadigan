@@ -8,13 +8,6 @@
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="alternate" type="application/rss+xml" href="/feed" />
 
-    <script src="js/underscore.js"></script>
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/backbone.js"></script>
-    <script src="js/hogan.js"></script>
-    <script src="js/showdown.js"></script>
-    <script src="js/models.js"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -140,7 +133,7 @@
                 <div class="span12" id="poststatus"></div>
             </div>
             <input type="text" name="title" placeholder="title" value="{{title}}"/>
-            <textarea name="posttext" id="posteditor" class="span12" style="height:250px;width:100%">{{content}}</textarea>
+            <textarea name="posttext" class="posteditor span12" style="height:250px;width:100%">{{content}}</textarea>
             <input type="text" name="tags" placeholder="how about, some, tags" value="{{tags}}"/>
             <p><strong>id:</strong> <span id="id">{{_id}}{{^_id}}(new){{/_id}}</span></p>
         </div> <!-- /.row-fluid -->
@@ -169,8 +162,17 @@
             welcome to cadigan.
     </div> <!-- /.alert.alert-success -->
 
-    <script src="js/templates.js"></script>
-    <script src="js/views.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/lib/underscore.js"></script>
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/lib/bootstrap.js"></script>
+    <script src="js/lib/backbone.js"></script>
+    <script src="js/lib/hogan.js"></script>
+    <script src="js/lib/showdown.js"></script>
+
+    <script src="js/models.js"></script>
+    <script src="js/app/templates.js"></script>
+    <script src="js/app/public.js"></script>
+    <script src="js/app/admin.js"></script>
+    <script src="js/app/main.js"></script>
 </body>
 </html>
